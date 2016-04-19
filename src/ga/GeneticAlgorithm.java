@@ -37,7 +37,7 @@ public class GeneticAlgorithm<I extends Individual, P extends Problem<I>> {
     }
 
     public I run(P problem) {
-        population = new Population<I, P>(populationSize, problem);
+        population = new Population<>(populationSize, problem);
         bestInRun = population.evaluate();
         t = 0;
         fireGenerationEnded(new GAEvent(this));
@@ -46,12 +46,13 @@ public class GeneticAlgorithm<I extends Individual, P extends Problem<I>> {
             Population<I, P> populationAux = selection.run(population);
             recombination(populationAux);
             mutation(populationAux);
+            
             population = generateNewPopulation(population, populationAux);
             I bestInGen = population.evaluate();
-            if(bestInGen.compareTo(bestInRun) > 0){
+            if (bestInGen.compareTo(bestInRun) > 0) {
                 bestInRun = (I) bestInGen.clone();
             }
-            t++;          
+            t++;
             fireGenerationEnded(new GAEvent(this));
         }
         fireRunEnded(new GAEvent(this));
@@ -75,9 +76,9 @@ public class GeneticAlgorithm<I extends Individual, P extends Problem<I>> {
             mutation.run(population.getIndividual(i));
         }
     }
-
-    public Population generateNewPopulation(Population<I, P> presentPopulation, Population<I, P> nextPopulation) {
-         return nextPopulation;
+    
+    public Population generateNewPopulation(Population<I, P> current, Population<I, P> next) {
+        return next;
     }
 
     public int getGeneration() {
@@ -110,9 +111,9 @@ public class GeneticAlgorithm<I extends Individual, P extends Problem<I>> {
         sb.append("Mutation:" + mutation + "\n");
         return sb.toString();
     }
-    
+
     //Listeners
-    private final transient List<GAListener> listeners = new ArrayList<GAListener>(3);
+    private final transient List<GAListener> listeners = new ArrayList<>(3);
 
     public synchronized void removeAGListener(GAListener listener) {
         if (listeners != null && listeners.contains(listener)) {

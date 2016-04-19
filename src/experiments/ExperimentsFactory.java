@@ -53,7 +53,7 @@ public abstract class ExperimentsFactory {
     private void readParametersFile(File file) throws IOException {
         java.util.Scanner scanner = new java.util.Scanner(file);
 
-        List<String> lines = new ArrayList<String>(100);
+        List<String> lines = new ArrayList<>(100);
 
         while (scanner.hasNextLine()) {
             String s = scanner.nextLine();
@@ -62,7 +62,7 @@ public abstract class ExperimentsFactory {
             }
         }
 
-        parameters = new HashMap<String, Parameter>(lines.size() * 2);
+        parameters = new HashMap<>(lines.size() * 2);
         orderedParametersVector = new Parameter[lines.size()];
         int i = 0;
         for (String line : lines) {
@@ -78,6 +78,7 @@ public abstract class ExperimentsFactory {
             orderedParametersVector[i++] = parameter;
         }
 
+//        //DEBUG
 //        for (i = 0; i < orderedParametersVector.length; i++) {
 //            System.out.print(orderedParametersVector[i].name + ": ");
 //            for (int j = 0; j < orderedParametersVector[i].getNumberOfValues(); j++) {
@@ -93,7 +94,7 @@ public abstract class ExperimentsFactory {
     private void readStatisticsFile(File file) throws IOException {
         java.util.Scanner scanner = new java.util.Scanner(file);
 
-        statisticsNames = new ArrayList<String>();
+        statisticsNames = new ArrayList<>();
 
         while (scanner.hasNextLine()) {
             String line = scanner.nextLine();

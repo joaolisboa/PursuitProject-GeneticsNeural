@@ -9,6 +9,7 @@ public class RecombinationTwoCuts <I extends Individual> extends Recombination<I
         super(probability);
     }
 
+    @Override
     public void run(I ind1, I ind2) {
         int cut1 = GeneticAlgorithm.random.nextInt(ind1.getNumGenes());
         int cut2 = GeneticAlgorithm.random.nextInt(ind1.getNumGenes());
@@ -18,8 +19,8 @@ public class RecombinationTwoCuts <I extends Individual> extends Recombination<I
             cut2 = aux;
         }
 
-        for (int g = cut1; g < cut2; g++) {
-            ind1.swapGenes(ind2, g);        }
+        for (int i = cut1; i < cut2; i++) {
+            ind1.swapGenes(ind2, i);        }
     }
     
     @Override

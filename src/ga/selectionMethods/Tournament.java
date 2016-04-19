@@ -18,8 +18,9 @@ public class Tournament <I extends Individual, P extends Problem<I>> extends Sel
         this.size = size;
     }
 
+    @Override
     public Population<I, P> run(Population<I, P> original) {
-        Population<I, P> result = new Population<I, P>(original.getSize());        
+        Population<I, P> result = new Population<>(original.getSize());        
 
         for (int i = 0; i < popSize; i++) {
             result.addIndividual(tournament(original));

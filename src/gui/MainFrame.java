@@ -1,27 +1,20 @@
 package gui;
 
+import pursuitDomain.PredatorIndividual;
+import pursuitDomain.PursuitDomainProblem;
+import pursuitDomain.PursuitDomainExperimentsFactory;
 import experiments.Experiment;
 import experiments.ExperimentEvent;
 import ga.GAEvent;
 import ga.GAListener;
 import ga.GeneticAlgorithm;
-import ga.geneticOperators.*;
-import ga.selectionMethods.*;
 import java.awt.BorderLayout;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
 import java.util.Random;
 import javax.swing.*;
-import knapsack.*;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
@@ -32,9 +25,10 @@ import org.jfree.data.xy.XYSeriesCollection;
 public class MainFrame extends JFrame implements GAListener {
 
     private static final long serialVersionUID = 1L;
-    private Knapsack knapsack;
-    private GeneticAlgorithm<KnapsackIndividual, Knapsack> ga;
-    private KnapsackExperimentsFactory experimentsFactory;
+    private PursuitDomainProblem problem;
+    private GeneticAlgorithm<PredatorIndividual, PursuitDomainProblem> ga;
+    private PredatorIndividual bestInRun;
+    private PursuitDomainExperimentsFactory experimentsFactory;
     private PanelTextArea problemPanel;
     PanelTextArea bestIndividualPanel;
     private PanelParameters panelParameters = new PanelParameters();
@@ -48,6 +42,8 @@ public class MainFrame extends JFrame implements GAListener {
     private XYSeries seriesAverage;
     private SwingWorker<Void, Void> worker;
 
+    private PanelSimulation simulationPanel;
+
     public MainFrame() {
         try {
             jbInit();
@@ -58,7 +54,7 @@ public class MainFrame extends JFrame implements GAListener {
 
     private void jbInit() throws Exception {
         setDefaultCloseOperation(EXIT_ON_CLOSE);
-        this.setTitle("Solving Knapsack using genetic algorithms");
+        this.setTitle("Pursuit Domain");
 
         //North Left Panel
         JPanel panelNorthLeft = new JPanel(new BorderLayout());
@@ -93,7 +89,7 @@ public class MainFrame extends JFrame implements GAListener {
                 true, // Show Legend
                 true, // Use tooltips
                 false // Configure chart to generate URLs?
-                );
+        );
         ChartPanel chartPanel = new ChartPanel(chart);
         chartPanel.setBorder(BorderFactory.createCompoundBorder(
                 BorderFactory.createTitledBorder(""),
@@ -128,14 +124,30 @@ public class MainFrame extends JFrame implements GAListener {
         southPanel.add(textFieldExperimentsStatus);
         textFieldExperimentsStatus.setEditable(false);
 
+        //Big left panel
+        JPanel bigLeftPanel = new JPanel(new BorderLayout());
+        bigLeftPanel.add(northPanel, java.awt.BorderLayout.NORTH);
+        bigLeftPanel.add(centerPanel, java.awt.BorderLayout.CENTER);
+        bigLeftPanel.add(southPanel, java.awt.BorderLayout.SOUTH);
+        this.getContentPane().add(bigLeftPanel);
+
+        simulationPanel = new PanelSimulation(this);
+
         //Global structure
         JPanel globalPanel = new JPanel(new BorderLayout());
-        globalPanel.add(northPanel, java.awt.BorderLayout.NORTH);
-        globalPanel.add(centerPanel, java.awt.BorderLayout.CENTER);
-        globalPanel.add(southPanel, java.awt.BorderLayout.SOUTH);
+        globalPanel.add(bigLeftPanel, java.awt.BorderLayout.WEST);
+        globalPanel.add(simulationPanel, java.awt.BorderLayout.EAST);
         this.getContentPane().add(globalPanel);
 
         pack();
+    }
+
+    public PursuitDomainProblem getProblem() {
+        return problem;
+    }
+
+    public PredatorIndividual getBestInRun() {
+        return bestInRun;
     }
 
     public void buttonDataSet_actionPerformed(ActionEvent e) {
@@ -145,8 +157,8 @@ public class MainFrame extends JFrame implements GAListener {
         try {
             if (returnVal == JFileChooser.APPROVE_OPTION) {
                 File dataSet = fc.getSelectedFile();
-                knapsack = Knapsack.buildKnapsack(dataSet);
-                problemPanel.textArea.setText(knapsack.toString());
+                problem = PursuitDomainProblem.buildProblemFromFile(dataSet);
+                problemPanel.textArea.setText(problem.toString());
                 problemPanel.textArea.setCaretPosition(0);
                 buttonRun.setEnabled(true);
             }
@@ -159,7 +171,7 @@ public class MainFrame extends JFrame implements GAListener {
 
     public void jButtonRun_actionPerformed(ActionEvent e) {
         try {
-            if (knapsack == null) {
+            if (problem == null) {
                 JOptionPane.showMessageDialog(this, "You must first choose a problem", "Error!", JOptionPane.ERROR_MESSAGE);
                 return;
             }
@@ -168,30 +180,27 @@ public class MainFrame extends JFrame implements GAListener {
             seriesBestIndividual.clear();
             seriesAverage.clear();
 
-            knapsack.setProb1s(Double.parseDouble(panelParameters.jTextFieldProb1s.getText()));
-            knapsack.setFitnessType(panelParameters.jComboBoxFitnessTypes.getSelectedIndex());
-
-            ga = new GeneticAlgorithm<KnapsackIndividual, Knapsack>(
+            Random random = new Random(Integer.parseInt(panelParameters.jTextFieldSeed.getText()));
+            ga = new GeneticAlgorithm<>(
                     Integer.parseInt(panelParameters.jTextFieldN.getText()),
                     Integer.parseInt(panelParameters.jTextFieldGenerations.getText()),
                     panelParameters.getSelectionMethod(),
                     panelParameters.getRecombinationMethod(),
                     panelParameters.getMutationMethod(),
-                    new Random(Integer.parseInt(panelParameters.jTextFieldSeed.getText())));
+                    random);
 
-            System.out.println("Prob of 1s: " + knapsack.getProb1s());
-            System.out.println("Fitness type: " + knapsack.getFitnessType());
             System.out.println(ga);
 
             ga.addGAListener(this);
 
-            manageButtons(false, false, true, false, false);
+            manageButtons(false, false, true, false, false, false);
 
             worker = new SwingWorker<Void, Void>() {
+                @Override
                 public Void doInBackground() {
                     try {
 
-                        ga.run(knapsack);
+                        bestInRun = ga.run(problem);
 
                     } catch (Exception e) {
                         e.printStackTrace(System.err);
@@ -201,7 +210,7 @@ public class MainFrame extends JFrame implements GAListener {
 
                 @Override
                 public void done() {
-                    manageButtons(true, true, false, true, experimentsFactory != null);
+                    manageButtons(true, true, false, true, experimentsFactory != null, true);
                 }
             };
 
@@ -212,8 +221,9 @@ public class MainFrame extends JFrame implements GAListener {
         }
     }
 
+    @Override
     public void generationEnded(GAEvent e) {
-        GeneticAlgorithm<KnapsackIndividual, Knapsack> source = e.getSource();
+        GeneticAlgorithm<PredatorIndividual, PursuitDomainProblem> source = e.getSource();
         bestIndividualPanel.textArea.setText(source.getBestInRun().toString());
         seriesBestIndividual.add(source.getGeneration(), source.getBestInRun().getFitness());
         seriesAverage.add(source.getGeneration(), source.getAverageFitness());
@@ -222,6 +232,7 @@ public class MainFrame extends JFrame implements GAListener {
         }
     }
 
+    @Override
     public void runEnded(GAEvent e) {
     }
 
@@ -235,8 +246,8 @@ public class MainFrame extends JFrame implements GAListener {
 
         try {
             if (returnVal == JFileChooser.APPROVE_OPTION) {
-                experimentsFactory = new KnapsackExperimentsFactory(fc.getSelectedFile());
-                manageButtons(true, knapsack != null, false, true, true);
+                experimentsFactory = new PursuitDomainExperimentsFactory(fc.getSelectedFile());
+                manageButtons(true, problem != null, false, true, true, false);
             }
         } catch (IOException e1) {
             e1.printStackTrace(System.err);
@@ -247,10 +258,11 @@ public class MainFrame extends JFrame implements GAListener {
 
     public void buttonRunExperiments_actionPerformed(ActionEvent e) {
 
-        manageButtons(false, false, false, false, false);
+        manageButtons(false, false, false, false, false, false);
         textFieldExperimentsStatus.setText("Running");
 
         worker = new SwingWorker<Void, Void>() {
+            @Override
             public Void doInBackground() {
                 try {
                     while (experimentsFactory.hasMoreExperiments()) {
@@ -271,13 +283,14 @@ public class MainFrame extends JFrame implements GAListener {
 
             @Override
             public void done() {
-                manageButtons(true, knapsack != null, false, true, false);
+                manageButtons(true, problem != null, false, true, false, false);
                 textFieldExperimentsStatus.setText("Finished");
             }
         };
         worker.execute();
     }
 
+    @Override
     public void experimentEnded(ExperimentEvent e) {
     }
 
@@ -286,78 +299,15 @@ public class MainFrame extends JFrame implements GAListener {
             boolean run,
             boolean stopRun,
             boolean experiments,
-            boolean runExperiments) {
+            boolean runExperiments,
+            boolean runEnvironment) {
 
         buttonDataSet.setEnabled(dataSet);
         buttonRun.setEnabled(run);
         buttonStop.setEnabled(stopRun);
         buttonExperiments.setEnabled(experiments);
         buttonRunExperiments.setEnabled(runExperiments);
-    }
-}
-
-class ButtonDataSet_actionAdapter implements ActionListener {
-
-    private MainFrame adaptee;
-
-    ButtonDataSet_actionAdapter(MainFrame adaptee) {
-        this.adaptee = adaptee;
-    }
-
-    public void actionPerformed(ActionEvent e) {
-        adaptee.buttonDataSet_actionPerformed(e);
-    }
-}
-
-class ButtonRun_actionAdapter implements ActionListener {
-
-    private MainFrame adaptee;
-
-    ButtonRun_actionAdapter(MainFrame adaptee) {
-        this.adaptee = adaptee;
-    }
-
-    public void actionPerformed(ActionEvent e) {
-        adaptee.jButtonRun_actionPerformed(e);
-    }
-}
-
-class ButtonStop_actionAdapter implements ActionListener {
-
-    private MainFrame adaptee;
-
-    ButtonStop_actionAdapter(MainFrame adaptee) {
-        this.adaptee = adaptee;
-    }
-
-    public void actionPerformed(ActionEvent e) {
-        adaptee.jButtonStop_actionPerformed(e);
-    }
-}
-
-class ButtonExperiments_actionAdapter implements ActionListener {
-
-    private MainFrame adaptee;
-
-    ButtonExperiments_actionAdapter(MainFrame adaptee) {
-        this.adaptee = adaptee;
-    }
-
-    public void actionPerformed(ActionEvent e) {
-        adaptee.buttonExperiments_actionPerformed(e);
-    }
-}
-
-class ButtonRunExperiments_actionAdapter implements ActionListener {
-
-    private MainFrame adaptee;
-
-    ButtonRunExperiments_actionAdapter(MainFrame adaptee) {
-        this.adaptee = adaptee;
-    }
-
-    public void actionPerformed(ActionEvent e) {
-        adaptee.buttonRunExperiments_actionPerformed(e);
+        simulationPanel.setJButtonSimulateEnabled(runEnvironment);
     }
 }
 
@@ -375,205 +325,72 @@ class PanelTextArea extends JPanel {
     }
 }
 
-class PanelAtributesValue extends JPanel {
+class ButtonDataSet_actionAdapter implements ActionListener {
 
-    protected String title;
-    protected List<JLabel> labels = new ArrayList<JLabel>();
-    protected List<JComponent> valueComponents = new ArrayList<JComponent>();
+    final private MainFrame adaptee;
 
-    public PanelAtributesValue() {
-    }
-
-    protected void configure() {
-
-        //for(JComponent textField : textFields)
-        //textField.setHorizontalAlignment(SwingConstants.RIGHT);
-
-        GridBagLayout gridbag = new GridBagLayout();
-        setLayout(gridbag);
-
-        //addLabelTextRows
-
-        GridBagConstraints c = new GridBagConstraints();
-        c.anchor = GridBagConstraints.NORTHEAST;
-        Iterator<JLabel> itLabels = labels.iterator();
-        Iterator<JComponent> itTextFields = valueComponents.iterator();
-
-        while (itLabels.hasNext()) {
-            c.gridwidth = GridBagConstraints.RELATIVE; //next-to-last
-            c.fill = GridBagConstraints.NONE;      //reset to default
-            c.weightx = 0.0;                       //reset to default
-            add(itLabels.next(), c);
-
-            c.gridwidth = GridBagConstraints.REMAINDER;     //end row
-            c.fill = GridBagConstraints.HORIZONTAL;
-            c.weightx = 1.0;
-            add(itTextFields.next(), c);
-        }
-    }
-}
-
-class PanelParameters extends PanelAtributesValue {
-
-    public static final int TEXT_FIELD_LENGHT = 7;
-    public static final String SEED = "1";
-    public static final String POPULATION_SIZE = "100";
-    public static final String GENERATIONS = "100";
-    public static final String TOURNAMENT_SIZE = "2";
-    public static final String PROB_RECOMBINATION = "0.7";
-    public static final String PROB_MUTATION = "0.001";
-    public static final String PROB_1S = "0.05";
-    JTextField jTextFieldSeed = new JTextField(SEED, TEXT_FIELD_LENGHT);
-    JTextField jTextFieldN = new JTextField(POPULATION_SIZE, TEXT_FIELD_LENGHT);
-    JTextField jTextFieldGenerations = new JTextField(GENERATIONS, TEXT_FIELD_LENGHT);
-    String[] selectionMethods = {"Tournament", "Roulette wheel"};
-    JComboBox jComboBoxSelectionMethods = new JComboBox(selectionMethods);
-    JTextField jTextFieldTournamentSize = new JTextField(TOURNAMENT_SIZE, TEXT_FIELD_LENGHT);
-    String[] recombinationMethods = {"One cut", "Two cuts", "Uniform"};
-    JComboBox jComboBoxRecombinationMethods = new JComboBox(recombinationMethods);
-    JTextField jTextFieldProbRecombination = new JTextField(PROB_RECOMBINATION, TEXT_FIELD_LENGHT);
-    JTextField jTextFieldProbMutation = new JTextField(PROB_MUTATION, TEXT_FIELD_LENGHT);
-    JTextField jTextFieldProb1s = new JTextField(PROB_1S, TEXT_FIELD_LENGHT);
-    String[] fitnessTypes = {"simple", "with penalty"};
-    JComboBox jComboBoxFitnessTypes = new JComboBox(fitnessTypes);
-
-    public PanelParameters() {
-        title = "Genetic algorithm parameters";
-
-        labels.add(new JLabel("Seed: "));
-        valueComponents.add(jTextFieldSeed);
-        jTextFieldSeed.addKeyListener(new IntegerTextField_KeyAdapter(null));
-
-        labels.add(new JLabel("Population size: "));
-        valueComponents.add(jTextFieldN);
-        jTextFieldN.addKeyListener(new IntegerTextField_KeyAdapter(null));
-
-        labels.add(new JLabel("# of generations: "));
-        valueComponents.add(jTextFieldGenerations);
-        jTextFieldGenerations.addKeyListener(new IntegerTextField_KeyAdapter(null));
-
-        labels.add(new JLabel("Selection method: "));
-        valueComponents.add(jComboBoxSelectionMethods);
-        jComboBoxSelectionMethods.addActionListener(new JComboBoxSelectionMethods_ActionAdapter(this));
-
-        labels.add(new JLabel("Tournament size: "));
-        valueComponents.add(jTextFieldTournamentSize);
-        jTextFieldTournamentSize.addKeyListener(new IntegerTextField_KeyAdapter(null));
-
-        labels.add(new JLabel("Recombination method: "));
-        valueComponents.add(jComboBoxRecombinationMethods);
-
-        labels.add(new JLabel("Recombination prob.: "));
-        valueComponents.add(jTextFieldProbRecombination);
-
-        labels.add(new JLabel("Mutation prob.: "));
-        valueComponents.add(jTextFieldProbMutation);
-
-        labels.add(new JLabel("Initial proportion of 1s: "));
-        valueComponents.add(jTextFieldProb1s);
-
-        labels.add(new JLabel("Fitness type: "));
-        valueComponents.add(jComboBoxFitnessTypes);
-        jComboBoxFitnessTypes.addActionListener(new JComboBoxFitnessFunction_ActionAdapter(this));
-
-        configure();
-    }
-
-    public void actionPerformedSelectionMethods(ActionEvent e) {
-        if (jComboBoxFitnessTypes.getSelectedIndex() == 1
-                && jComboBoxSelectionMethods.getSelectedIndex() == 1) {
-            jComboBoxSelectionMethods.setSelectedIndex(0);
-            JOptionPane.showMessageDialog(this, "Not allowed with penalty fitness", "Error!", JOptionPane.ERROR_MESSAGE);
-        }
-        jTextFieldTournamentSize.setEnabled((jComboBoxSelectionMethods.getSelectedIndex() == 0) ? true : false);
-    }
-
-    public SelectionMethod<KnapsackIndividual, Knapsack> getSelectionMethod() {
-        switch (jComboBoxSelectionMethods.getSelectedIndex()) {
-            case 0:
-                return new Tournament<KnapsackIndividual, Knapsack>(
-                        Integer.parseInt(jTextFieldN.getText()),
-                        Integer.parseInt(jTextFieldTournamentSize.getText()));
-            case 1:
-                return new RouletteWheel<KnapsackIndividual, Knapsack>(
-                        Integer.parseInt(jTextFieldN.getText()));
-        }
-        return null;
-    }
-
-    public Recombination<KnapsackIndividual> getRecombinationMethod() {
-
-        double recombinationProb = Double.parseDouble(jTextFieldProbRecombination.getText());
-
-        switch (jComboBoxRecombinationMethods.getSelectedIndex()) {
-            case 0:
-                return new RecombinationOneCut<KnapsackIndividual>(recombinationProb);
-            case 1:
-                return new RecombinationTwoCuts<KnapsackIndividual>(recombinationProb);
-            case 2:
-                return new RecombinationUniform<KnapsackIndividual>(recombinationProb);
-        }
-        return null;
-    }
-
-    public MutationBinary<KnapsackIndividual> getMutationMethod() {
-        double mutationProb = Double.parseDouble(jTextFieldProbMutation.getText());
-        return new MutationBinary<KnapsackIndividual>(mutationProb);
-    }
-
-    public void actionPerformedFitnessType(ActionEvent e) {
-        if (jComboBoxFitnessTypes.getSelectedIndex() == 1
-                && jComboBoxSelectionMethods.getSelectedIndex() == 1) {
-            jComboBoxFitnessTypes.setSelectedIndex(0);
-            JOptionPane.showMessageDialog(this, "Not allowed with roulette wheel", "Error!", JOptionPane.ERROR_MESSAGE);
-        }
-    }
-}
-
-class JComboBoxSelectionMethods_ActionAdapter implements ActionListener {
-
-    private PanelParameters adaptee;
-
-    JComboBoxSelectionMethods_ActionAdapter(PanelParameters adaptee) {
+    ButtonDataSet_actionAdapter(MainFrame adaptee) {
         this.adaptee = adaptee;
     }
 
+    @Override
     public void actionPerformed(ActionEvent e) {
-        adaptee.actionPerformedSelectionMethods(e);
+        adaptee.buttonDataSet_actionPerformed(e);
     }
 }
 
-class JComboBoxFitnessFunction_ActionAdapter implements ActionListener {
+class ButtonRun_actionAdapter implements ActionListener {
 
-    private PanelParameters adaptee;
+    final private MainFrame adaptee;
 
-    JComboBoxFitnessFunction_ActionAdapter(PanelParameters adaptee) {
+    ButtonRun_actionAdapter(MainFrame adaptee) {
         this.adaptee = adaptee;
     }
 
+    @Override
     public void actionPerformed(ActionEvent e) {
-        adaptee.actionPerformedFitnessType(e);
+        adaptee.jButtonRun_actionPerformed(e);
     }
 }
 
-class IntegerTextField_KeyAdapter implements KeyListener {
+class ButtonStop_actionAdapter implements ActionListener {
 
-    private MainFrame adaptee;
+    final private MainFrame adaptee;
 
-    IntegerTextField_KeyAdapter(MainFrame adaptee) {
+    ButtonStop_actionAdapter(MainFrame adaptee) {
         this.adaptee = adaptee;
     }
 
-    public void keyReleased(KeyEvent e) {
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        adaptee.jButtonStop_actionPerformed(e);
+    }
+}
+
+class ButtonExperiments_actionAdapter implements ActionListener {
+
+    final private MainFrame adaptee;
+
+    ButtonExperiments_actionAdapter(MainFrame adaptee) {
+        this.adaptee = adaptee;
     }
 
-    public void keyPressed(KeyEvent e) {
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        adaptee.buttonExperiments_actionPerformed(e);
+    }
+}
+
+class ButtonRunExperiments_actionAdapter implements ActionListener {
+
+    final private MainFrame adaptee;
+
+    ButtonRunExperiments_actionAdapter(MainFrame adaptee) {
+        this.adaptee = adaptee;
     }
 
-    public void keyTyped(KeyEvent e) {
-        char c = e.getKeyChar();
-        if (!Character.isDigit(c) || c == KeyEvent.VK_BACK_SPACE || c == KeyEvent.VK_DELETE) {
-            e.consume();
-        }
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        adaptee.buttonRunExperiments_actionPerformed(e);
     }
 }

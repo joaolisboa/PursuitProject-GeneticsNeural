@@ -21,7 +21,7 @@ public class StatisticBestInRun<I extends Individual, P extends Problem<I>> impl
     @Override
     public void runEnded(GAEvent e) {
         GeneticAlgorithm<I, P> ga = e.getSource();
-        if (bestInExperiment == null || ga.getBestInRun().getFitness() > bestInExperiment.getFitness()) {
+        if (bestInExperiment == null || ga.getBestInRun().compareTo(bestInExperiment) > 0) {
             bestInExperiment = (I) ga.getBestInRun().clone();
         }
     }
