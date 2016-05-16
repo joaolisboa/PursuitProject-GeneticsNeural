@@ -111,7 +111,7 @@ public class Environment {
 
     //THIS METHOD *MAY* BE USED BY THE PREY IF YOU WANT TO SELECT THE RANDOM
     //PREY MOVEMENT JUST BETWEEN FREE SORROUNDING CELLS.
-    public List<Cell> getFreeSorroundingCells(Cell cell) {
+    public List<Cell> getFreeSurroundingCells(Cell cell) {
         List<Cell> freeCells = new LinkedList<>();
         if (!getNorthCell(cell).hasAgent()) {
             freeCells.add(getNorthCell(cell));

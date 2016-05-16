@@ -184,6 +184,7 @@ public class MainFrame extends JFrame implements GAListener {
             ga = new GeneticAlgorithm<>(
                     Integer.parseInt(panelParameters.jTextFieldN.getText()),
                     Integer.parseInt(panelParameters.jTextFieldGenerations.getText()),
+                    panelParameters.getTaskMode(),
                     panelParameters.getSelectionMethod(),
                     panelParameters.getRecombinationMethod(),
                     panelParameters.getMutationMethod(),

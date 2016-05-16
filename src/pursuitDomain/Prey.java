@@ -14,5 +14,13 @@ public class Prey extends Agent{
     @Override
     public void act(Environment environment) {
         //TODO
+        double prob = environment.random.nextDouble();
+        
+        if(prob < restProbability){
+            //won't move
+            return;
+        }
+        
+        
     }    
 }

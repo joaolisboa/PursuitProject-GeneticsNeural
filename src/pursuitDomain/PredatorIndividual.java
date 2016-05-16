@@ -42,7 +42,13 @@ public class PredatorIndividual extends RealVectorIndividual<PursuitDomainProble
      */
     @Override
     public int compareTo(PredatorIndividual i) {
-        //TODO
+        //condição vai depender do computeFitness()
+        //se o fitness mais baixo for melhor tem de ser ao contrário
+        if(this.fitness > i.getFitness()){
+            return 1;
+        }else if(this.fitness < i.getFitness()){
+            return -1;
+        }
         return 0;
     }
 

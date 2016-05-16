@@ -16,6 +16,11 @@ import javax.swing.JLabel;
 import javax.swing.JTextField;
 import pursuitDomain.PredatorIndividual;
 import pursuitDomain.PursuitDomainProblem;
+import tasks.AdHocController;
+import tasks.HeterogeneousController;
+import tasks.HomogeneousController;
+import tasks.RandomController;
+import tasks.TaskMode;
 
 public class PanelParameters extends PanelAtributesValue {
 
@@ -34,12 +39,17 @@ public class PanelParameters extends PanelAtributesValue {
     JTextField jTextFieldTournamentSize = new JTextField(TOURNAMENT_SIZE, TEXT_FIELD_LENGHT);
     String[] recombinationMethods = {"One cut", "Two cuts", "Uniform"};
     JComboBox jComboBoxRecombinationMethods = new JComboBox(recombinationMethods);
+    String[] taskSelection = {"Tarefa 1", "Tarefa 2", "Tarefa 3", "Tarefa 4"};
+    JComboBox jComboBoxTaskSelection = new JComboBox(taskSelection);
     JTextField jTextFieldProbRecombination = new JTextField(PROB_RECOMBINATION, TEXT_FIELD_LENGHT);
     JTextField jTextFieldProbMutation = new JTextField(PROB_MUTATION, TEXT_FIELD_LENGHT);
     //MORE PARAMETERS?
     
     public PanelParameters() {
         title = "Genetic algorithm parameters";
+        
+        labels.add(new JLabel("Task Selection: "));
+        valueComponents.add(jComboBoxTaskSelection);
 
         labels.add(new JLabel("Seed: "));
         valueComponents.add(jTextFieldSeed);
@@ -85,6 +95,20 @@ public class PanelParameters extends PanelAtributesValue {
                 return new Tournament<>(
                         Integer.parseInt(jTextFieldN.getText()),
                         Integer.parseInt(jTextFieldTournamentSize.getText()));
+        }
+        return null;
+    }
+    
+    public TaskMode getTaskMode(){
+        switch (jComboBoxTaskSelection.getSelectedIndex()) {
+            case 0: // TAREFA 1
+                return new RandomController();
+            case 1: // TAREFA 2  
+                return new AdHocController();
+            case 2: // TAREFA 3
+                return new HomogeneousController();
+            case 3: // TAREFA 4
+                return new HeterogeneousController();
         }
         return null;
     }

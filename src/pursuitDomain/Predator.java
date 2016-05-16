@@ -96,6 +96,7 @@ public class Predator extends Agent {
      */
     public void setWeights(double[] weights) {
         //TODO
+        
     }
     
     /**
