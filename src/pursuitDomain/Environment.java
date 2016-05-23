@@ -13,6 +13,8 @@ public class Environment {
     private final List<Predator> predators;
     private final Prey prey;
     private final int maxIterations;
+    private int numIterations; // num of iterations in the simulation
+    private int totalPredatorsDistance;
 
     //MORE ATTRIBUTES?
     
@@ -26,6 +28,8 @@ public class Environment {
             int predatorsNumOutputs) {
 
         this.maxIterations = maxIterations;
+        numIterations = 0;
+        totalPredatorsDistance = 0;
 
         grid = new Cell[size][size];
         for (int i = 0; i < grid.length; i++) {
@@ -56,7 +60,7 @@ public class Environment {
     }
 
     //THIS METHOD SHOULD BE CALLED RIGHT BEFORE EACH CALL TO METHOD simulate (SEE BELOW).
-    //THAT IS, IT MUST BE CALLED RIGHT BEFORE EACH SIMULATION (.
+    //THAT IS, IT MUST BE CALLED RIGHT BEFORE EACH SIMULATION.
     public void initializeAgentsPositions(int seed) {
         //THE NEXT LINE MEANS THAT ALL INDIVIDUALS WILL BE EVALUATED WITH THE SAME
         //ENVIRONEMNT STARTING POSITIONS.
@@ -68,15 +72,18 @@ public class Environment {
         }
 
         prey.setCell(getCell(random.nextInt(grid.length), random.nextInt(grid.length)));
-
+        int i = 0;
         for (Predator predator : predators) {
+            i++;
             do {
-                Cell cell = getCell(
-                        random.nextInt(grid.length), random.nextInt(grid.length));
+                Cell cell = getCell(random.nextInt(grid.length), random.nextInt(grid.length));
                 if (!cell.hasAgent()) {
                     predator.setCell(cell);
                 }
             } while (predator.getCell() == null);
+            System.out.print("Predator " + i);
+            System.out.print(" X: " + predator.getCell().getColumn() + 
+                               " Y: " + predator.getCell().getLine() + "\n");
         }        
     }
         
@@ -89,8 +96,26 @@ public class Environment {
     //COMPUTES THE SUM OF THE (SMALLEST) DISTANCES OF ALL THE PREDATORS TO THE PREY.
     //IT TAKES INTO ACCOUNT THAT THE ENVIRONMENT IS TOROIDAL.
     public int computePredatorsPreyDistanceSum() {
-        //TODO
-        return 0;
+        int distance = 0;
+        for(Predator pre: predators){
+            
+            int width = Math.abs(pre.cell.getColumn() - prey.cell.getColumn());
+            int height = Math.abs(pre.cell.getLine() - prey.cell.getLine());
+            int nonToroidalDist = height+width;
+            
+            int heightT = grid[0].length - height;
+            int widthT = grid.length - width;
+            int toroidalDist = heightT + widthT;
+            
+            if(nonToroidalDist < toroidalDist){
+                distance += nonToroidalDist;
+            }else{
+                distance += toroidalDist;
+            }
+        }
+        
+        totalPredatorsDistance += distance;
+        return distance;
     }
     
     public int getSize() {
@@ -126,6 +151,14 @@ public class Environment {
             freeCells.add(getWestCell(cell));
         }
         return freeCells;
+    }
+
+    public int getNumIterations() {
+        return numIterations;
+    }
+
+    public int getTotalPredatorsDistance() {
+        return totalPredatorsDistance;
     }
 
     public Color getCellColor(int line, int column) {
@@ -165,5 +198,5 @@ public class Environment {
         for (EnvironmentListener listener : listeners) {
             listener.environmentUpdated();
         }
-    }    
+    } 
 }

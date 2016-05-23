@@ -5,31 +5,30 @@ import tasks.TaskMode;
 public abstract class RealVectorIndividual <P extends Problem, I extends RealVectorIndividual> extends Individual<P, I>{
 
     //TODO: GENOME DEFINITION;
-    private double[] genome;
-    private TaskMode taskMode;
-    
+    protected double[] genome;
+    //protected TaskMode taskMode;
     
     public RealVectorIndividual(P problem, int size, TaskMode taskMode) {
         super(problem);
-        //size = genomeSize
+        
         genome = new double[size];
-        this.taskMode = taskMode;
         generateGenome();
+        //this.taskMode = taskMode;
+        
     }
 
     public RealVectorIndividual(RealVectorIndividual<P, I> original) {
         super(original);
         this.genome = new double[original.getNumGenes()];
         System.arraycopy(original.genome, 0, genome, 0, genome.length);
-        this.taskMode = original.taskMode;
+        //this.taskMode = original.taskMode;
     }
     
     private void generateGenome(){
-        taskMode.generateGenome();
-    }
-    
-    public double[] getGenome(){
-        return this.genome;
+        // generate random between -1 & 1
+        for(int i = 0; i < genome.length; i++){
+            genome[i] = GeneticAlgorithm.random.nextDouble() * 2 - 1;
+        }
     }
     
     @Override
