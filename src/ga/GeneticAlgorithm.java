@@ -6,14 +6,12 @@ import ga.selectionMethods.SelectionMethod;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
-import tasks.TaskMode;
 
 public class GeneticAlgorithm<I extends Individual, P extends Problem<I>> {
 
     public static Random random;
     private final int populationSize;
     private final int maxGenerations;
-    private final TaskMode taskMode;
     private final SelectionMethod<I, P> selection;
     private final Recombination<I> recombination;
     private final Mutation<I> mutation;
@@ -25,7 +23,6 @@ public class GeneticAlgorithm<I extends Individual, P extends Problem<I>> {
     public GeneticAlgorithm(
             int populationSize,
             int maxGenerations,
-            TaskMode taskMode,
             SelectionMethod<I, P> selection,
             Recombination<I> recombination,
             Mutation<I> mutation,
@@ -34,7 +31,6 @@ public class GeneticAlgorithm<I extends Individual, P extends Problem<I>> {
         random = rand;
         this.populationSize = populationSize;
         this.maxGenerations = maxGenerations;
-        this.taskMode = taskMode;
         this.selection = selection;
         this.recombination = recombination;
         this.mutation = mutation;

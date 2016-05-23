@@ -1,36 +1,54 @@
 package ga;
 
+import tasks.TaskMode;
+
 public abstract class RealVectorIndividual <P extends Problem, I extends RealVectorIndividual> extends Individual<P, I>{
 
     //TODO: GENOME DEFINITION;
+    private double[] genome;
+    private TaskMode taskMode;
     
-    public RealVectorIndividual(P problem, int size) {
+    
+    public RealVectorIndividual(P problem, int size, TaskMode taskMode) {
         super(problem);
-        //TODO
+        //size = genomeSize
+        genome = new double[size];
+        this.taskMode = taskMode;
+        generateGenome();
     }
 
     public RealVectorIndividual(RealVectorIndividual<P, I> original) {
         super(original);
-        //TODO
+        this.genome = new double[original.getNumGenes()];
+        System.arraycopy(original.genome, 0, genome, 0, genome.length);
+        this.taskMode = original.taskMode;
+    }
+    
+    private void generateGenome(){
+        taskMode.generateGenome();
+    }
+    
+    public double[] getGenome(){
+        return this.genome;
     }
     
     @Override
     public int getNumGenes() {
-        //TODO
-        return 1;
+        return genome.length;
     }
     
     public double getGene(int index) {
-        //TODO
-        return 0;
+        return genome[index];
     }
     
     public void setGene(int index, double newValue) {
-        //TODO
+        genome[index] = newValue;
     }
 
     @Override
     public void swapGenes(RealVectorIndividual other, int index) {
-        //TODO
+        double aux = genome[index];
+        genome[index] = other.getGene(index);
+        other.setGene(index, aux);
     }
 }

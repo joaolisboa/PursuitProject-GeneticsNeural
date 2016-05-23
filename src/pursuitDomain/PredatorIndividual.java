@@ -1,11 +1,12 @@
 package pursuitDomain;
 
 import ga.RealVectorIndividual;
+import tasks.TaskMode;
 
 public class PredatorIndividual extends RealVectorIndividual<PursuitDomainProblem, PredatorIndividual> {
 
-    public PredatorIndividual(PursuitDomainProblem problem, int size /*COMPLETE?*/) {
-        super(problem, size);
+    public PredatorIndividual(PursuitDomainProblem problem, int size, TaskMode taskMode /*COMPLETE?*/) {
+        super(problem, size, taskMode);
         //COMPLETE?
     }
 
@@ -17,6 +18,7 @@ public class PredatorIndividual extends RealVectorIndividual<PursuitDomainProble
     @Override
     public double computeFitness() {
         //TODO
+        
         return 0;
     }
 

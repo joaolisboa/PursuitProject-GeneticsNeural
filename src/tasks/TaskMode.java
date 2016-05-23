@@ -12,5 +12,7 @@ package tasks;
 public abstract class TaskMode {
     
     public abstract void run();
+
+    public abstract void generateGenome();
     
 }

@@ -101,7 +101,7 @@ public class Environment {
         return prey;
     }
     
-    public List getPredators() {
+    public List<Predator> getPredators() {
         return predators;
     }    
 

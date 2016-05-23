@@ -56,6 +56,10 @@ public class Predator extends Agent {
     //Predators' coordinates relative to the Prey
     private void buildPerception(Environment environment) {
         //TODO
+        for(Predator p: environment.getPredators()){
+            int dist = Math.abs(p.getCell().getColumn() - environment.getPrey().cell.getColumn());
+        }
+        
     }
 
     private Action decide() {
@@ -92,7 +96,7 @@ public class Predator extends Agent {
     /**
      * Initializes the network's weights
      * 
-     * @param weights vector of weights comming from the individual.
+     * @param weights vector of weights coming from the individual.
      */
     public void setWeights(double[] weights) {
         //TODO

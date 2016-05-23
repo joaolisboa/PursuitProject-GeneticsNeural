@@ -20,4 +20,9 @@ public class RandomController extends TaskMode {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
+    @Override
+    public void generateGenome() {
+        System.out.println("random controller");
+    }
+
 }

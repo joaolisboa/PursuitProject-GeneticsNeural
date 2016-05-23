@@ -184,7 +184,6 @@ public class MainFrame extends JFrame implements GAListener {
             ga = new GeneticAlgorithm<>(
                     Integer.parseInt(panelParameters.jTextFieldN.getText()),
                     Integer.parseInt(panelParameters.jTextFieldGenerations.getText()),
-                    panelParameters.getTaskMode(),
                     panelParameters.getSelectionMethod(),
                     panelParameters.getRecombinationMethod(),
                     panelParameters.getMutationMethod(),
@@ -193,14 +192,14 @@ public class MainFrame extends JFrame implements GAListener {
             System.out.println(ga);
 
             ga.addGAListener(this);
-
+            problem.setTaskMode(panelParameters.getTaskMode());
             manageButtons(false, false, true, false, false, false);
 
             worker = new SwingWorker<Void, Void>() {
                 @Override
                 public Void doInBackground() {
                     try {
-
+                            
                         bestInRun = ga.run(problem);
 
                     } catch (Exception e) {

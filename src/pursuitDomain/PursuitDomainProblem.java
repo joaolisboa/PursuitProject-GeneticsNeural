@@ -5,11 +5,13 @@ import java.io.File;
 import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
+import tasks.TaskMode;
 
 public class PursuitDomainProblem implements Problem<PredatorIndividual> {
 
     public static int NUM_PREDATOR_OUTPUTS = 2;
     
+    private TaskMode taskMode;
     final private int environmentSize;
     final private int maxIterations;
     final private double probPreyRest;
@@ -51,7 +53,13 @@ public class PursuitDomainProblem implements Problem<PredatorIndividual> {
     public PredatorIndividual getNewIndividual() {
         int genomeSize = 0; //CHANGE THIS
         //genomeSize = (int)(numPredators * 2 + 1);
-        return new PredatorIndividual(this, genomeSize /*COMPLETE?*/);
+        /*
+        TAMANHO GENOMA:
+            predadores e presa
+        
+        
+        */
+        return new PredatorIndividual(this, genomeSize, taskMode /*COMPLETE?*/);
     }
 
     public Environment getEnvironment() {
@@ -94,6 +102,14 @@ public class PursuitDomainProblem implements Problem<PredatorIndividual> {
                 numPredators,
                 numHiddenUnits,
                 numEnvironmentRuns);
+    }
+
+    public TaskMode getTaskMode() {
+        return taskMode;
+    }
+
+    public void setTaskMode(TaskMode taskMode) {
+        this.taskMode = taskMode;
     }
 
     @Override

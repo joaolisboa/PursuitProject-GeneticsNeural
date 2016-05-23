@@ -15,5 +15,10 @@ public class AdHocController extends TaskMode{
     public void run() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
+
+    @Override
+    public void generateGenome() {
+        System.out.println("adhoc controller");
+    }
     
 }

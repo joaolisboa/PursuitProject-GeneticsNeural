@@ -102,7 +102,6 @@ public class PursuitDomainExperimentsFactory extends ExperimentsFactory {
                 new GeneticAlgorithm<>(
                     populationSize,
                     maxGenerations,
-                    taskMode,
                     selection,
                     recombination,
                     mutation,
