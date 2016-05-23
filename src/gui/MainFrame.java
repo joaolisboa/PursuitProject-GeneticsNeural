@@ -192,14 +192,14 @@ public class MainFrame extends JFrame implements GAListener {
             System.out.println(ga);
 
             ga.addGAListener(this);
-
+            problem.setTaskMode(panelParameters.getTaskMode());
             manageButtons(false, false, true, false, false, false);
 
             worker = new SwingWorker<Void, Void>() {
                 @Override
                 public Void doInBackground() {
                     try {
-
+                            
                         bestInRun = ga.run(problem);
 
                     } catch (Exception e) {

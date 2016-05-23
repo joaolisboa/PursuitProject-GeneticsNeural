@@ -1,28 +1,40 @@
 package pursuitDomain;
 
 import ga.RealVectorIndividual;
+import tasks.TaskMode;
 
 public class PredatorIndividual extends RealVectorIndividual<PursuitDomainProblem, PredatorIndividual> {
-
-    public PredatorIndividual(PursuitDomainProblem problem, int size /*COMPLETE?*/) {
-        super(problem, size);
-        //COMPLETE?
+    
+    public PredatorIndividual(PursuitDomainProblem problem, int size, TaskMode taskMode /*COMPLETE?*/) {
+        super(problem, size, taskMode);
     }
 
     public PredatorIndividual(PredatorIndividual original) {
         super(original);
-        //COMPLETE
     }
 
     @Override
     public double computeFitness() {
-        //TODO
+        Environment env = problem.getEnvironment();
+        env.setPredatorsWeights(genome);
+        fitness = 0;
+        
+        for(int i = 0; i < problem.getNumEvironmentSimulations(); i++){
+            env.initializeAgentsPositions(i);
+            env.simulate();
+            fitness += 100 / (env.getNumIterations() * 0.4 + 
+                            env.getTotalPredatorsDistance() * 0.3 +
+                            env.computePredatorsPreyDistanceSum() * 0.3);
+                // 40% numIteracoes 
+                // 30% distancia total dos predadores à presa durante a simulação
+                // 30% distancia no final da simulação 
+        }
+        
         return 0;
     }
 
     public double[] getGenome(){
-        //TODO
-        return null;
+        return genome;
     }
 
     @Override
@@ -42,7 +54,11 @@ public class PredatorIndividual extends RealVectorIndividual<PursuitDomainProble
      */
     @Override
     public int compareTo(PredatorIndividual i) {
-        //TODO
+        if(this.fitness > i.getFitness()){
+            return 1;
+        }else if(this.fitness < i.getFitness()){
+            return -1;
+        }
         return 0;
     }
 

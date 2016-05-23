@@ -5,11 +5,13 @@ import java.io.File;
 import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
+import tasks.TaskMode;
 
 public class PursuitDomainProblem implements Problem<PredatorIndividual> {
 
     public static int NUM_PREDATOR_OUTPUTS = 2;
     
+    private TaskMode taskMode;
     final private int environmentSize;
     final private int maxIterations;
     final private double probPreyRest;
@@ -32,7 +34,7 @@ public class PursuitDomainProblem implements Problem<PredatorIndividual> {
         this.maxIterations = maxIterations;
         this.probPreyRest = probPreyRests;
         this.numPredators = numPredators;
-        this.predatorsNumInputs = 100; //THIS IS A FALSE NUMBER; PLEASE ADAPT TO YOUR CASE
+        this.predatorsNumInputs = 8;
         this.predatorsNumHiddenUnits = numPredatorHiddenUnits;
         this.predatorNumOutputs = NUM_PREDATOR_OUTPUTS;
         this.numEnvironmentRuns = numEnvironmentRuns;
@@ -49,8 +51,10 @@ public class PursuitDomainProblem implements Problem<PredatorIndividual> {
 
     @Override
     public PredatorIndividual getNewIndividual() {
-        int genomeSize = 0; //CHANGE THIS
-        return new PredatorIndividual(this, genomeSize /*COMPLETE?*/);
+        // tarefa 4 -> numInputs*4
+        int genomeSize = (int)((numPredators + 1) * 2) + (predatorsNumInputs + 1) * predatorsNumHiddenUnits;
+        System.out.println("Tamanho do genoma: " + genomeSize);
+        return new PredatorIndividual(this, genomeSize, taskMode /*COMPLETE?*/);
     }
 
     public Environment getEnvironment() {
@@ -93,6 +97,14 @@ public class PursuitDomainProblem implements Problem<PredatorIndividual> {
                 numPredators,
                 numHiddenUnits,
                 numEnvironmentRuns);
+    }
+
+    public TaskMode getTaskMode() {
+        return taskMode;
+    }
+
+    public void setTaskMode(TaskMode taskMode) {
+        this.taskMode = taskMode;
     }
 
     @Override

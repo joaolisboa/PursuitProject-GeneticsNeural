@@ -11,11 +11,17 @@ import java.util.ArrayList;
 import java.util.Random;
 import statistics.StatisticBestAverage;
 import statistics.StatisticBestInRun;
+import tasks.AdHocController;
+import tasks.HeterogeneousController;
+import tasks.HomogeneousController;
+import tasks.RandomController;
+import tasks.TaskMode;
 
 public class PursuitDomainExperimentsFactory extends ExperimentsFactory {
 
     private int populationSize;
     private int maxGenerations;
+    private TaskMode taskMode;
     private SelectionMethod<PredatorIndividual, PursuitDomainProblem> selection;
     private Recombination<PredatorIndividual> recombination;
     private Mutation<PredatorIndividual> mutation;
@@ -49,6 +55,20 @@ public class PursuitDomainExperimentsFactory extends ExperimentsFactory {
                 break;
             case "uniform":
                 recombination = new RecombinationUniform<>(recombinationProbability);
+        }
+        
+        switch(getParameterValue("Task")){
+            case "random":
+                taskMode = new RandomController();
+                break;
+            case "adhoc":
+                taskMode = new AdHocController();
+                break;
+            case "task_3":
+                taskMode = new HomogeneousController();
+                break;
+            case "task_4":
+                taskMode = new HeterogeneousController();
         }
 
         //COMPLETE

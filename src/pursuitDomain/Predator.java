@@ -3,7 +3,7 @@ package pursuitDomain;
 import java.awt.Color;
 
 public class Predator extends Agent {
-   
+
     final private int inputLayerSize;
     final private int hiddenLayerSize;
     final private int outputLayerSize;
@@ -45,6 +45,7 @@ public class Predator extends Agent {
         hiddenLayerOutput = new double[hiddenLayerSize + 1];
         hiddenLayerOutput[hiddenLayerSize] = -1; // the bias entry for the output neurons
         output = new int[outputLayerSize];
+        System.out.println("input Layer size");
     }
 
     @Override
@@ -55,12 +56,24 @@ public class Predator extends Agent {
 
     //Predators' coordinates relative to the Prey
     private void buildPerception(Environment environment) {
-        //TODO
+        int i = 0;
+        for (Predator p : environment.getPredators()) {
+            int width = p.cell.getColumn() - environment.getPrey().cell.getColumn();
+            int height = p.cell.getLine() - environment.getPrey().cell.getLine();
+
+            int heightT = environment.getSize() - height;
+            int widthT = environment.getSize() - width;
+
+            if (Math.abs(widthT) < Math.abs(width)) {
+                inputs[i] = (width > 0) ? -widthT : widthT;
+            }
+        }
+
     }
 
     private Action decide() {
         forwardPropagation();
-               
+
         //Here we are assuming that the output has two elements, only
         if (output[0] == 0 && output[1] == 0) {
             return Action.NORTH;
@@ -91,13 +104,28 @@ public class Predator extends Agent {
 
     /**
      * Initializes the network's weights
-     * 
-     * @param weights vector of weights comming from the individual.
+     *
+     * @param weights vector of weights coming from the individual.
      */
     public void setWeights(double[] weights) {
-        //TODO
+        //w1 = new double[inputLayerSize][hiddenLayerSize]; 
+        //w2 = new double[hiddenLayerSize + 1][outputLayerSize];
+        int i = 0;
+        for (int x = 0; x < inputLayerSize; x++) {
+            for (int y = 0; y < hiddenLayerSize; y++) {
+                w1[x][y] = weights[i];
+                i++;
+            }
+        }
+        i = inputLayerSize;
+        for (int x = 0; x < hiddenLayerSize + 1; x++) {
+            for (int y = 0; y < outputLayerSize; y++) {
+                w2[x][y] = weights[i];
+                i++;
+            }
+        }
     }
-    
+
     /**
      * Computes the output of the network for the inputs saved in the class
      * vector "inputs".
@@ -105,5 +133,5 @@ public class Predator extends Agent {
      */
     private void forwardPropagation() {
         //TODO
-    }    
+    }
 }

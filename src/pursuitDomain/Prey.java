@@ -1,6 +1,8 @@
 package pursuitDomain;
 
+import ga.GeneticAlgorithm;
 import java.awt.Color;
+import java.util.List;
 
 public class Prey extends Agent{
 
@@ -13,6 +15,11 @@ public class Prey extends Agent{
     
     @Override
     public void act(Environment environment) {
-        //TODO
+        double prob = GeneticAlgorithm.random.nextDouble();
+        
+        if(prob > restProbability){
+            List<Cell> freeCells = environment.getFreeSurroundingCells(cell);
+            setCell(freeCells.get(GeneticAlgorithm.random.nextInt(freeCells.size())));
+        }// else: won't move
     }    
 }

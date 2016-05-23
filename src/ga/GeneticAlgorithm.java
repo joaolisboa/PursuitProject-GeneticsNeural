@@ -77,7 +77,7 @@ public class GeneticAlgorithm<I extends Individual, P extends Problem<I>> {
         }
     }
     
-    public Population generateNewPopulation(Population<I, P> current, Population<I, P> next) {
+    private Population generateNewPopulation(Population<I, P> current, Population<I, P> next) {
         return next;
     }
 
