@@ -5,20 +5,27 @@
  */
 package tasks;
 
+import pursuitDomain.Predator;
+
 /**
  *
  * @author J
  */
 public class HeterogeneousController extends TaskMode{
-
+    
     @Override
-    public void run() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public void run(Predator predator) {
+        
     }
-
+    
     @Override
-    public void generateGenome() {
-        System.out.println("heterogeneous controller");
+    public int getGenomeSize(double numPredators, int predatorsNumInputs, int predatorsNumHiddenUnits){
+        return (int)((numPredators + 1) * 2) + ((predatorsNumInputs * 4) + 1) * predatorsNumHiddenUnits;
     }
+    
+    @Override
+    public String toString(){
+        return "Heterogeneous Controller - Tarefa 4";
+    } 
     
 }

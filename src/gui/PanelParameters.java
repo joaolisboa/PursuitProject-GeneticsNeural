@@ -1,6 +1,8 @@
 package gui;
 
+import ga.geneticOperators.Mutation;
 import ga.geneticOperators.MutationMUTATION_NAME;
+import ga.geneticOperators.MutationReorder;
 import ga.geneticOperators.Recombination;
 import ga.geneticOperators.RecombinationOneCut;
 import ga.geneticOperators.RecombinationTwoCuts;
@@ -29,8 +31,8 @@ public class PanelParameters extends PanelAtributesValue {
     public static final String POPULATION_SIZE = "100";
     public static final String GENERATIONS = "100";
     public static final String TOURNAMENT_SIZE = "2";
-    public static final String PROB_RECOMBINATION = "0.7";
-    public static final String PROB_MUTATION = "0.1";
+    public static final String PROB_RECOMBINATION = "0.3";
+    public static final String PROB_MUTATION = "0.4";
     JTextField jTextFieldSeed = new JTextField(SEED, TEXT_FIELD_LENGHT);
     JTextField jTextFieldN = new JTextField(POPULATION_SIZE, TEXT_FIELD_LENGHT);
     JTextField jTextFieldGenerations = new JTextField(GENERATIONS, TEXT_FIELD_LENGHT);
@@ -79,8 +81,6 @@ public class PanelParameters extends PanelAtributesValue {
 
         labels.add(new JLabel("Mutation prob.: "));
         valueComponents.add(jTextFieldProbMutation);
-
-        //MORE PARAMETERS?
         
         configure();
     }
@@ -128,10 +128,11 @@ public class PanelParameters extends PanelAtributesValue {
         return null;
     }
 
-    public MutationMUTATION_NAME<PredatorIndividual> getMutationMethod() {
+    public Mutation<PredatorIndividual> getMutationMethod() {
         double mutationProbability = Double.parseDouble(jTextFieldProbMutation.getText());
         //COMPLETE?
-        return new MutationMUTATION_NAME<>(mutationProbability/*COMPLETE?*/);
+        //return new MutationMUTATION_NAME<>(mutationProbability/*COMPLETE?*/);
+        return new MutationReorder<>(mutationProbability);
     }
 }
 

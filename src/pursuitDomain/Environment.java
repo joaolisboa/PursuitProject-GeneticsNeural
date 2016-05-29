@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
+import tasks.TaskMode;
 
 public class Environment {
 
@@ -81,21 +82,39 @@ public class Environment {
                     predator.setCell(cell);
                 }
             } while (predator.getCell() == null);
-            System.out.print("Predator " + i);
-            System.out.print(" X: " + predator.getCell().getColumn() + 
-                               " Y: " + predator.getCell().getLine() + "\n");
         }        
     }
         
     //MAKES A SIMULATION OF THE ENVIRONMENT. THE AGENTS START IN THE POSITIONS
     //WHERE THEY WHERE PLACED IN METHOD initializeAgentsPositions.
     public void simulate() {
-        //TODO
+        readyNewSimulation();
+        for(numIterations = 0; numIterations < maxIterations; numIterations++){
+            prey.act(this);
+            for (Predator predator : predators) {
+                predator.act(this);
+            }
+            computePredatorsPreyDistanceSum();
+            fireUpdatedEnvironment();
+            if(isPreyTrapped()){
+                break;
+            }
+        }
+    }
+    
+    public boolean isPreyTrapped(){
+        return getFreeSurroundingCells(prey.cell).isEmpty();
     }
 
+    public int computePredatorsPreyDistanceSum() {
+        int distance = getPredatorsPreyDistanceSum();
+        totalPredatorsDistance += distance;
+        return distance;
+    }
+     
     //COMPUTES THE SUM OF THE (SMALLEST) DISTANCES OF ALL THE PREDATORS TO THE PREY.
     //IT TAKES INTO ACCOUNT THAT THE ENVIRONMENT IS TOROIDAL.
-    public int computePredatorsPreyDistanceSum() {
+    public int getPredatorsPreyDistanceSum(){
         int distance = 0;
         for(Predator pre: predators){
             
@@ -113,8 +132,6 @@ public class Environment {
                 distance += toroidalDist;
             }
         }
-        
-        totalPredatorsDistance += distance;
         return distance;
     }
     
@@ -155,6 +172,10 @@ public class Environment {
 
     public int getNumIterations() {
         return numIterations;
+    }
+    
+    public void setNumIterations(int i) {
+        this.numIterations = 0;
     }
 
     public int getTotalPredatorsDistance() {
@@ -199,4 +220,9 @@ public class Environment {
             listener.environmentUpdated();
         }
     } 
+
+    void readyNewSimulation() {
+        numIterations = 0;
+        totalPredatorsDistance = 0;
+    }
 }

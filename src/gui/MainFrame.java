@@ -187,12 +187,12 @@ public class MainFrame extends JFrame implements GAListener {
                     panelParameters.getSelectionMethod(),
                     panelParameters.getRecombinationMethod(),
                     panelParameters.getMutationMethod(),
-                    random);
+                    random,
+                    panelParameters.getTaskMode());
 
             System.out.println(ga);
 
             ga.addGAListener(this);
-            problem.setTaskMode(panelParameters.getTaskMode());
             manageButtons(false, false, true, false, false, false);
 
             worker = new SwingWorker<Void, Void>() {

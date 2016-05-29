@@ -105,7 +105,8 @@ public class PursuitDomainExperimentsFactory extends ExperimentsFactory {
                     selection,
                     recombination,
                     mutation,
-                    new Random(seed));
+                    new Random(seed),
+                    taskMode);
 
         for (ExperimentListener statistic : statistics) {
             ga.addGAListener((GAListener) statistic);
@@ -131,6 +132,7 @@ public class PursuitDomainExperimentsFactory extends ExperimentsFactory {
         sb.append("Selection:" + selection + "\t");
         sb.append("Recombination:" + recombination + "\t");
         sb.append("Mutation:" + mutation + "\t");
+        sb.append("Task: " + taskMode + "\t");
         return sb.toString();
     }
 }

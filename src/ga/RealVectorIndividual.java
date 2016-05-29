@@ -1,19 +1,15 @@
 package ga;
 
-import tasks.TaskMode;
-
 public abstract class RealVectorIndividual <P extends Problem, I extends RealVectorIndividual> extends Individual<P, I>{
 
     //TODO: GENOME DEFINITION;
     protected double[] genome;
-    //protected TaskMode taskMode;
     
-    public RealVectorIndividual(P problem, int size, TaskMode taskMode) {
+    public RealVectorIndividual(P problem, int size) {
         super(problem);
         
         genome = new double[size];
         generateGenome();
-        //this.taskMode = taskMode;
         
     }
 
@@ -21,7 +17,6 @@ public abstract class RealVectorIndividual <P extends Problem, I extends RealVec
         super(original);
         this.genome = new double[original.getNumGenes()];
         System.arraycopy(original.genome, 0, genome, 0, genome.length);
-        //this.taskMode = original.taskMode;
     }
     
     private void generateGenome(){

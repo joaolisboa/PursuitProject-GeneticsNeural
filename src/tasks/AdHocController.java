@@ -5,20 +5,22 @@
  */
 package tasks;
 
+import pursuitDomain.Predator;
+
 /**
  *
  * @author J
  */
 public class AdHocController extends TaskMode{
-
+    
     @Override
-    public void run() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
+    public void run(Predator predator) {
 
-    @Override
-    public void generateGenome() {
-        System.out.println("adhoc controller");
     }
+    
+    @Override
+    public String toString(){
+        return "AdHoc Controller - Tarefa 2";
+    }  
     
 }

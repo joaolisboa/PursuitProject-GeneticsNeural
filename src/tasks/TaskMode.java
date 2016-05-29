@@ -5,14 +5,18 @@
  */
 package tasks;
 
+import pursuitDomain.Predator;
+
 /**
  *
  * @author J
  */
 public abstract class TaskMode {
     
-    public abstract void run();
-
-    public abstract void generateGenome();
+    public abstract void run(Predator predator);
+    
+    public int getGenomeSize(double numPredators, int predatorsNumInputs, int predatorsNumHiddenUnits){
+        return (int)((numPredators + 1) * 2) + (predatorsNumInputs + 1) * predatorsNumHiddenUnits;
+    }
     
 }

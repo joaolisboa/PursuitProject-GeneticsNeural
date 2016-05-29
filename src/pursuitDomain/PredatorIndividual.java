@@ -1,12 +1,11 @@
 package pursuitDomain;
 
 import ga.RealVectorIndividual;
-import tasks.TaskMode;
 
 public class PredatorIndividual extends RealVectorIndividual<PursuitDomainProblem, PredatorIndividual> {
     
-    public PredatorIndividual(PursuitDomainProblem problem, int size, TaskMode taskMode /*COMPLETE?*/) {
-        super(problem, size, taskMode);
+    public PredatorIndividual(PursuitDomainProblem problem, int size) {
+        super(problem, size);
     }
 
     public PredatorIndividual(PredatorIndividual original) {
@@ -22,15 +21,17 @@ public class PredatorIndividual extends RealVectorIndividual<PursuitDomainProble
         for(int i = 0; i < problem.getNumEvironmentSimulations(); i++){
             env.initializeAgentsPositions(i);
             env.simulate();
-            fitness += 100 / (env.getNumIterations() * 0.4 + 
-                            env.getTotalPredatorsDistance() * 0.3 +
-                            env.computePredatorsPreyDistanceSum() * 0.3);
-                // 40% numIteracoes 
-                // 30% distancia total dos predadores à presa durante a simulação
-                // 30% distancia no final da simulação 
+            
+            // adicionar uma formula de fitness diferente caso a presa seja apanhada?
+            fitness += 1000 / (env.getNumIterations() * 0.5 + 
+                        env.getTotalPredatorsDistance() * 0.25 +
+                        env.getPredatorsPreyDistanceSum() * 0.25);
+                        // alternative?
+                        // 40% numIteracoes 
+                        // 30% distancia total dos predadores à presa durante a simulação
+                        // 30% distancia no final da simulação
         }
-        
-        return 0;
+        return fitness;
     }
 
     public double[] getGenome(){
@@ -39,10 +40,12 @@ public class PredatorIndividual extends RealVectorIndividual<PursuitDomainProble
 
     @Override
     public String toString() {
+        Environment env = problem.getEnvironment();
         StringBuilder sb = new StringBuilder();
-        sb.append("\nfitness: ");
-        sb.append(fitness);
-        //COMPLETE
+        sb.append("\nfitness: " + (double)Math.round(fitness * 1000) / 1000);
+        sb.append("\nnumber of iterations: " + env.getNumIterations());
+        sb.append("\nlast distance to prey: " + env.getPredatorsPreyDistanceSum());
+        sb.append("\ntotal distance to prey: " + env.getTotalPredatorsDistance());
         return sb.toString();
     }
 

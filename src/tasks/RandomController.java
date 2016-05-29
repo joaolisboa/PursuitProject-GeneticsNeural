@@ -5,24 +5,26 @@
  */
 package tasks;
 
+import ga.GeneticAlgorithm;
+import pursuitDomain.Predator;
+
 /**
  *
  * @author J
  */
 public class RandomController extends TaskMode {
-
-    public RandomController() {
-        
+    
+    @Override
+    public void run(Predator predator) {
+        int[] output = new int[2];
+        output[0] = GeneticAlgorithm.random.nextInt(2);
+        output[1] = GeneticAlgorithm.random.nextInt(2);
+        predator.setOutput(output);
     }
 
     @Override
-    public void run() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public void generateGenome() {
-        System.out.println("random controller");
-    }
+    public String toString(){
+        return "Random Controller - Tarefa 1";
+    } 
 
 }

@@ -20,6 +20,7 @@ public class PanelSimulation extends JPanel implements EnvironmentListener {
     public static final int PANEL_SIZE = 250;
     public static final int CELL_SIZE = 20;
     public static final int GRID_TO_PANEL_GAP = 20;
+    private boolean stopped;
     MainFrame mainFrame;
     private Environment environment;
     private Image image;

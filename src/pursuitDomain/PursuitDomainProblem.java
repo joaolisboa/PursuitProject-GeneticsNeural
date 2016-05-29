@@ -1,5 +1,6 @@
 package pursuitDomain;
 
+import ga.GeneticAlgorithm;
 import ga.Problem;
 import java.io.File;
 import java.io.IOException;
@@ -11,7 +12,6 @@ public class PursuitDomainProblem implements Problem<PredatorIndividual> {
 
     public static int NUM_PREDATOR_OUTPUTS = 2;
     
-    private TaskMode taskMode;
     final private int environmentSize;
     final private int maxIterations;
     final private double probPreyRest;
@@ -52,9 +52,8 @@ public class PursuitDomainProblem implements Problem<PredatorIndividual> {
     @Override
     public PredatorIndividual getNewIndividual() {
         // tarefa 4 -> numInputs*4
-        int genomeSize = (int)((numPredators + 1) * 2) + (predatorsNumInputs + 1) * predatorsNumHiddenUnits;
-        System.out.println("Tamanho do genoma: " + genomeSize);
-        return new PredatorIndividual(this, genomeSize, taskMode /*COMPLETE?*/);
+        int genomeSize = GeneticAlgorithm.taskMode.getGenomeSize(numPredators, predatorsNumInputs, predatorsNumHiddenUnits);
+        return new PredatorIndividual(this, genomeSize /*COMPLETE?*/);
     }
 
     public Environment getEnvironment() {
@@ -97,14 +96,6 @@ public class PursuitDomainProblem implements Problem<PredatorIndividual> {
                 numPredators,
                 numHiddenUnits,
                 numEnvironmentRuns);
-    }
-
-    public TaskMode getTaskMode() {
-        return taskMode;
-    }
-
-    public void setTaskMode(TaskMode taskMode) {
-        this.taskMode = taskMode;
     }
 
     @Override

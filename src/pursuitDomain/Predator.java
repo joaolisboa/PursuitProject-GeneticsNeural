@@ -1,5 +1,6 @@
 package pursuitDomain;
 
+import ga.GeneticAlgorithm;
 import java.awt.Color;
 
 public class Predator extends Agent {
@@ -45,7 +46,6 @@ public class Predator extends Agent {
         hiddenLayerOutput = new double[hiddenLayerSize + 1];
         hiddenLayerOutput[hiddenLayerSize] = -1; // the bias entry for the output neurons
         output = new int[outputLayerSize];
-        System.out.println("input Layer size");
     }
 
     @Override
@@ -67,6 +67,11 @@ public class Predator extends Agent {
             if (Math.abs(widthT) < Math.abs(width)) {
                 inputs[i] = (width > 0) ? -widthT : widthT;
             }
+            
+            if (Math.abs(heightT) < Math.abs(height)) {
+                inputs[i + 1] = (height > 0) ? -heightT : height;
+            }
+            i+=2;
         }
 
     }
@@ -108,8 +113,6 @@ public class Predator extends Agent {
      * @param weights vector of weights coming from the individual.
      */
     public void setWeights(double[] weights) {
-        //w1 = new double[inputLayerSize][hiddenLayerSize]; 
-        //w2 = new double[hiddenLayerSize + 1][outputLayerSize];
         int i = 0;
         for (int x = 0; x < inputLayerSize; x++) {
             for (int y = 0; y < hiddenLayerSize; y++) {
@@ -125,6 +128,14 @@ public class Predator extends Agent {
             }
         }
     }
+    
+    private double sigmoid(double x){
+        return 1 / (1 + Math.exp(-x));
+    }
+    
+    public void setOutput(int[] output){
+        System.arraycopy(output, 0, this.output, 0, this.outputLayerSize);
+    }
 
     /**
      * Computes the output of the network for the inputs saved in the class
@@ -132,6 +143,27 @@ public class Predator extends Agent {
      *
      */
     private void forwardPropagation() {
-        //TODO
+        /*double sum;
+        //First layer outputs computation
+        for (int i = 0; i < hiddenLayerSize; i++) {
+            sum = 0;
+            for (int j = 0; j < inputLayerSize; j++) {
+                sum += inputs[j] * w1[j][i];
+            }
+
+            hiddenLayerOutput[i] = sigmoid(sum);
+        }
+        //the bias entry is already set to -1 in the constructor
+        
+        //output layer outputs computation
+        for (int i = 0; i < outputLayerSize; i++) {
+            sum = 0;
+            for (int j = 0; j < hiddenLayerSize + 1; j++) {
+                sum += hiddenLayerOutput[j] * w2[j][i];
+            }
+
+            output[i] = (int) sigmoid(sum);
+        }*/
+        GeneticAlgorithm.taskMode.run(this);
     }
 }
