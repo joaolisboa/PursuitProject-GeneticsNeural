@@ -1,8 +1,8 @@
 package gui;
 
 import ga.geneticOperators.Mutation;
-import ga.geneticOperators.MutationMUTATION_NAME;
-import ga.geneticOperators.MutationReorder;
+import ga.geneticOperators.MutationGaussian;
+import ga.geneticOperators.OXCrossover;
 import ga.geneticOperators.Recombination;
 import ga.geneticOperators.RecombinationOneCut;
 import ga.geneticOperators.RecombinationTwoCuts;
@@ -29,22 +29,24 @@ public class PanelParameters extends PanelAtributesValue {
     public static final int TEXT_FIELD_LENGHT = 7;
     public static final String SEED = "1";
     public static final String POPULATION_SIZE = "100";
-    public static final String GENERATIONS = "100";
+    public static final String GENERATIONS = "1000";
     public static final String TOURNAMENT_SIZE = "2";
-    public static final String PROB_RECOMBINATION = "0.3";
-    public static final String PROB_MUTATION = "0.4";
+    public static final String PROB_RECOMBINATION = "0.2";
+    public static final String PROB_MUTATION = "0.7";
+    public static final String STANDARD_DEVIATION = "1";
     JTextField jTextFieldSeed = new JTextField(SEED, TEXT_FIELD_LENGHT);
     JTextField jTextFieldN = new JTextField(POPULATION_SIZE, TEXT_FIELD_LENGHT);
     JTextField jTextFieldGenerations = new JTextField(GENERATIONS, TEXT_FIELD_LENGHT);
     String[] selectionMethods = {"Tournament"};
     JComboBox jComboBoxSelectionMethods = new JComboBox(selectionMethods);
     JTextField jTextFieldTournamentSize = new JTextField(TOURNAMENT_SIZE, TEXT_FIELD_LENGHT);
-    String[] recombinationMethods = {"One cut", "Two cuts", "Uniform"};
+    String[] recombinationMethods = {"OXCrossover", "One cut", "Two cuts", "Uniform"};
     JComboBox jComboBoxRecombinationMethods = new JComboBox(recombinationMethods);
     String[] taskSelection = {"Tarefa 1", "Tarefa 2", "Tarefa 3", "Tarefa 4"};
     JComboBox jComboBoxTaskSelection = new JComboBox(taskSelection);
     JTextField jTextFieldProbRecombination = new JTextField(PROB_RECOMBINATION, TEXT_FIELD_LENGHT);
     JTextField jTextFieldProbMutation = new JTextField(PROB_MUTATION, TEXT_FIELD_LENGHT);
+    JTextField jTextFieldStandardDeviation = new JTextField(STANDARD_DEVIATION, TEXT_FIELD_LENGHT);
     //MORE PARAMETERS?
     
     public PanelParameters() {
@@ -81,6 +83,9 @@ public class PanelParameters extends PanelAtributesValue {
 
         labels.add(new JLabel("Mutation prob.: "));
         valueComponents.add(jTextFieldProbMutation);
+        
+        labels.add(new JLabel("Standard Deviation: "));
+        valueComponents.add(jTextFieldStandardDeviation);
         
         configure();
     }
@@ -119,10 +124,12 @@ public class PanelParameters extends PanelAtributesValue {
 
         switch (jComboBoxRecombinationMethods.getSelectedIndex()) {
             case 0:
-                return new RecombinationOneCut<>(recombinationProb);
+                return new OXCrossover<>(recombinationProb);
             case 1:
-                return new RecombinationTwoCuts<>(recombinationProb);
+                return new RecombinationOneCut<>(recombinationProb);
             case 2:
+                return new RecombinationTwoCuts<>(recombinationProb);
+            case 3:
                 return new RecombinationUniform<>(recombinationProb);
         }
         return null;
@@ -130,9 +137,8 @@ public class PanelParameters extends PanelAtributesValue {
 
     public Mutation<PredatorIndividual> getMutationMethod() {
         double mutationProbability = Double.parseDouble(jTextFieldProbMutation.getText());
-        //COMPLETE?
-        //return new MutationMUTATION_NAME<>(mutationProbability/*COMPLETE?*/);
-        return new MutationReorder<>(mutationProbability);
+        double sd = Double.parseDouble(jTextFieldStandardDeviation.getText());
+        return new MutationGaussian<>(mutationProbability, sd);
     }
 }
 

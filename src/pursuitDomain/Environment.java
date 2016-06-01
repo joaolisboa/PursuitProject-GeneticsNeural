@@ -5,19 +5,16 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
-import tasks.TaskMode;
 
 public class Environment {
 
-    public Random random;
+    public static Random random;
     private final Cell[][] grid;
     private final List<Predator> predators;
     private final Prey prey;
     private final int maxIterations;
     private int numIterations; // num of iterations in the simulation
     private int totalPredatorsDistance;
-
-    //MORE ATTRIBUTES?
     
     public Environment(
             int size,
@@ -52,7 +49,7 @@ public class Environment {
         this.random = new Random();
     }
 
-    //THIS METHOD SHOULD BE CALLED IN THE METHOD computeFitness BEFORE A
+    //THIS METHOD SHOULD BE CALLED IN THE METHOD computeFitness BEFORE
     //ALL THE SIMULATIONS START.
     public void setPredatorsWeights(double[] weights) {
         for (Predator predator : predators) {
@@ -87,8 +84,8 @@ public class Environment {
         
     //MAKES A SIMULATION OF THE ENVIRONMENT. THE AGENTS START IN THE POSITIONS
     //WHERE THEY WHERE PLACED IN METHOD initializeAgentsPositions.
-    public void simulate() {
-        readyNewSimulation();
+    public boolean simulate() {
+        totalPredatorsDistance = 0;
         for(numIterations = 0; numIterations < maxIterations; numIterations++){
             prey.act(this);
             for (Predator predator : predators) {
@@ -97,9 +94,17 @@ public class Environment {
             computePredatorsPreyDistanceSum();
             fireUpdatedEnvironment();
             if(isPreyTrapped()){
-                break;
+                System.out.println("WON!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+                System.out.println("iterations to catch: " + numIterations);
+                System.out.println("Coordinates: ");
+                System.out.println(prey.cell);
+                for(Predator p: predators){
+                    System.out.println(p.cell);
+                }
+                return true;
             }
         }
+        return false;
     }
     
     public boolean isPreyTrapped(){
@@ -117,20 +122,30 @@ public class Environment {
     public int getPredatorsPreyDistanceSum(){
         int distance = 0;
         for(Predator pre: predators){
+            //System.out.println("prey x: " + prey.cell.getColumn() + " y: " + prey.cell.getLine());
+            //System.out.println("predator x: " + pre.cell.getColumn() + " y: " + pre.cell.getLine());
+            int width = pre.cell.getColumn() - prey.cell.getColumn();
+            int height = pre.cell.getLine() - prey.cell.getLine();
+            //int nonToroidalDist = Math.abs(height) + Math.abs(width);
+            //System.out.println("w: " + width + " h: " + height);
+            //System.out.println("nonTor dist: " + nonToroidalDist);
             
-            int width = Math.abs(pre.cell.getColumn() - prey.cell.getColumn());
-            int height = Math.abs(pre.cell.getLine() - prey.cell.getLine());
-            int nonToroidalDist = height+width;
+            int heightT = grid[0].length - Math.abs(height);
+            if(heightT == grid[0].length) heightT = 0;
+            int widthT = grid.length - Math.abs(width);
+            if(widthT == grid.length) widthT = 0;
+            //int toroidalDist = heightT + widthT;
+            //System.out.println("wT: " + widthT + " hT: " + heightT);
+            //System.out.println("tor dist: " + toroidalDist);
+            //System.out.println("\n");
             
-            int heightT = grid[0].length - height;
-            int widthT = grid.length - width;
-            int toroidalDist = heightT + widthT;
+            width = Math.abs(width);
+            height = Math.abs(height);
+            widthT = Math.abs(widthT);
+            heightT = Math.abs(heightT);
             
-            if(nonToroidalDist < toroidalDist){
-                distance += nonToroidalDist;
-            }else{
-                distance += toroidalDist;
-            }
+            distance += height < heightT ? height : heightT;
+            distance += width < widthT ? width : widthT;
         }
         return distance;
     }
@@ -182,6 +197,10 @@ public class Environment {
         return totalPredatorsDistance;
     }
 
+    public int getMaxIterations() {
+        return maxIterations;
+    }
+
     public Color getCellColor(int line, int column) {
         return grid[line][column].getColor();
     }
@@ -220,9 +239,4 @@ public class Environment {
             listener.environmentUpdated();
         }
     } 
-
-    void readyNewSimulation() {
-        numIterations = 0;
-        totalPredatorsDistance = 0;
-    }
 }

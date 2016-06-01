@@ -14,8 +14,8 @@ import pursuitDomain.Predator;
 public class HeterogeneousController extends TaskMode{
     
     @Override
-    public void run(Predator predator) {
-        
+    public int[] run(Predator predator) {
+        return null;
     }
     
     @Override

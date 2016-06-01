@@ -6,7 +6,6 @@ import java.io.File;
 import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
-import tasks.TaskMode;
 
 public class PursuitDomainProblem implements Problem<PredatorIndividual> {
 
@@ -53,7 +52,7 @@ public class PursuitDomainProblem implements Problem<PredatorIndividual> {
     public PredatorIndividual getNewIndividual() {
         // tarefa 4 -> numInputs*4
         int genomeSize = GeneticAlgorithm.taskMode.getGenomeSize(numPredators, predatorsNumInputs, predatorsNumHiddenUnits);
-        return new PredatorIndividual(this, genomeSize /*COMPLETE?*/);
+        return new PredatorIndividual(this, genomeSize);
     }
 
     public Environment getEnvironment() {

@@ -5,7 +5,7 @@
  */
 package tasks;
 
-import ga.GeneticAlgorithm;
+import pursuitDomain.Environment;
 import pursuitDomain.Predator;
 
 /**
@@ -15,11 +15,11 @@ import pursuitDomain.Predator;
 public class RandomController extends TaskMode {
     
     @Override
-    public void run(Predator predator) {
+    public int[] run(Predator predator) {
         int[] output = new int[2];
-        output[0] = GeneticAlgorithm.random.nextInt(2);
-        output[1] = GeneticAlgorithm.random.nextInt(2);
-        predator.setOutput(output);
+        output[0] = Environment.random.nextInt(2);
+        output[1] = Environment.random.nextInt(2);
+        return output;
     }
 
     @Override

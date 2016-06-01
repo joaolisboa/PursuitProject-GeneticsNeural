@@ -19,6 +19,10 @@ public abstract class Individual<P extends Problem, I extends Individual> implem
     public abstract int getNumGenes();
     
     public abstract void swapGenes(I other, int g);    
+    
+    public abstract double getGene(int index);
+    
+    public abstract void setGene(int index, double newValue);
 
     public double getFitness() {
         return fitness;

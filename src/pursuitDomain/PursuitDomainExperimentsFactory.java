@@ -74,9 +74,10 @@ public class PursuitDomainExperimentsFactory extends ExperimentsFactory {
         //COMPLETE
         //MUTATION
         double mutationProbability = Double.parseDouble(getParameterValue("Mutation probability"));
+        double sd = Double.parseDouble(getParameterValue("Standard deviation"));
         if (getParameterValue("Mutation").equals("uniform_distribution")) {
             //OTHER PARAMETERS TO YOUR MUTATION OPERATOR, IF THEY EXIST ARE FETCHED HERE
-            mutation = new MutationMUTATION_NAME<>(mutationProbability/*COMPLETE?*/);
+            mutation = new MutationGaussian<>(mutationProbability, sd);
         }
 
         //PROBLEM 

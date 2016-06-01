@@ -2,21 +2,36 @@ package ga;
 
 public abstract class RealVectorIndividual <P extends Problem, I extends RealVectorIndividual> extends Individual<P, I>{
 
-    //TODO: GENOME DEFINITION;
     protected double[] genome;
     
-    public RealVectorIndividual(P problem, int size) {
+    // data distributed for each simulation
+    protected int[] numIterations;
+    protected int[] lastDistancesToPrey;
+    protected int[] totalDistanceToPreyInSim;
+    
+    protected int numCatches;
+    
+    public RealVectorIndividual(P problem, int size, int numSimulations) {
         super(problem);
         
         genome = new double[size];
         generateGenome();
         
+        numCatches = 0;
+        numIterations = new int[numSimulations];
+        lastDistancesToPrey = new int[numSimulations];
+        totalDistanceToPreyInSim = new int[numSimulations];
     }
 
     public RealVectorIndividual(RealVectorIndividual<P, I> original) {
         super(original);
         this.genome = new double[original.getNumGenes()];
         System.arraycopy(original.genome, 0, genome, 0, genome.length);
+        
+        numCatches = original.numCatches;
+        numIterations = original.numIterations;
+        lastDistancesToPrey = original.lastDistancesToPrey;
+        totalDistanceToPreyInSim = original.totalDistanceToPreyInSim;
     }
     
     private void generateGenome(){

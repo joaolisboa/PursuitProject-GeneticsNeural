@@ -29,10 +29,10 @@ public class GeneticAlgorithm<I extends Individual, P extends Problem<I>> {
             Recombination<I> recombination,
             Mutation<I> mutation,
             Random rand,
-            TaskMode taskMode) {
+            TaskMode task) {
 
         random = rand;
-        this.taskMode = taskMode;
+        taskMode = task;
         this.populationSize = populationSize;
         this.maxGenerations = maxGenerations;
         this.selection = selection;

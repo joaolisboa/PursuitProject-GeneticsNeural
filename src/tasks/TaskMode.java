@@ -13,7 +13,7 @@ import pursuitDomain.Predator;
  */
 public abstract class TaskMode {
     
-    public abstract void run(Predator predator);
+    public abstract int[] run(Predator predator);
     
     public int getGenomeSize(double numPredators, int predatorsNumInputs, int predatorsNumHiddenUnits){
         return (int)((numPredators + 1) * 2) + (predatorsNumInputs + 1) * predatorsNumHiddenUnits;

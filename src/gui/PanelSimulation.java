@@ -10,10 +10,13 @@ import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
+import java.util.Arrays;
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JPanel;
+import javax.swing.JTextArea;
 import javax.swing.SwingWorker;
+import pursuitDomain.PredatorIndividual;
 
 public class PanelSimulation extends JPanel implements EnvironmentListener {
 
@@ -26,6 +29,7 @@ public class PanelSimulation extends JPanel implements EnvironmentListener {
     private Image image;
     JPanel environmentPanel = new JPanel();
     final JButton buttonSimulate = new JButton("Simulate");
+    JTextArea statistics = new JTextArea();
 
     public PanelSimulation(MainFrame mainFrame) {
         this.mainFrame = mainFrame;
@@ -33,7 +37,9 @@ public class PanelSimulation extends JPanel implements EnvironmentListener {
         setLayout(new BorderLayout());
 
         add(environmentPanel, java.awt.BorderLayout.NORTH);
+        add(statistics, java.awt.BorderLayout.CENTER);
         add(buttonSimulate, java.awt.BorderLayout.SOUTH);
+        
         buttonSimulate.addActionListener(new SimulationPanel_jButtonSimulate_actionAdapter(this));
 
         setBorder(BorderFactory.createCompoundBorder(
@@ -61,14 +67,19 @@ public class PanelSimulation extends JPanel implements EnvironmentListener {
         SwingWorker worker = new SwingWorker<Void, Void>() {
             @Override
             public Void doInBackground() {
-                double[] weights = mainFrame.getBestInRun().getGenome();
+                PredatorIndividual ind = mainFrame.getBestInRun();
+                double[] weights = ind.getGenome();
                 int environmentSimulations = mainFrame.getProblem().getNumEvironmentSimulations();
-
+                System.out.println("\n####################################");
+                System.out.println("simulation: " + Arrays.toString(weights));
+                System.out.println("fitness: " + ind.getFitness());
                 for (int i = 0; i < environmentSimulations; i++) {
                     environment.setPredatorsWeights(weights);
                     environment.initializeAgentsPositions(i);
                     environmentUpdated();
-                    environment.simulate();
+                    printStats(ind, i);
+                    if(environment.simulate())
+                        return null;
                 }
                 return null;
             }
@@ -77,13 +88,22 @@ public class PanelSimulation extends JPanel implements EnvironmentListener {
             public void done() {
                 environment.removeEnvironmentListener(simulationPanel);
                 try {
-                    Thread.sleep(400);
+                    Thread.sleep(1200);
                 } catch (InterruptedException ignore) {
                 }
 
             }
         };
         worker.execute();
+    }
+    
+    private void printStats(PredatorIndividual ind, int i){
+        StringBuilder sb = new StringBuilder();
+        sb.append("Simulation ").append(i).append(":");
+        sb.append("\n# iterations: ").append(ind.getNumIterations()[i]);
+        sb.append("\nlast distance to prey: ").append(ind.getLastDistancesToPrey()[i]);
+        sb.append("\ntotal distance to prey: ").append(ind.getTotalDistanceToPreyInSim()[i]);
+        statistics.setText(sb.toString());
     }
 
     public void buildImage(Environment environment) {
@@ -117,7 +137,7 @@ public class PanelSimulation extends JPanel implements EnvironmentListener {
         g.drawImage(image, GRID_TO_PANEL_GAP, GRID_TO_PANEL_GAP, null);
 
         try {
-            Thread.sleep(100);
+            Thread.sleep(300);
         } catch (InterruptedException ignore) {
         }
     }

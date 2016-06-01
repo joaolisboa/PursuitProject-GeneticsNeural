@@ -35,4 +35,9 @@ public class Cell {
     public Color getColor(){
         return agent != null ? agent.getColor() : Color.WHITE;
     }
+    
+    @Override
+    public String toString(){
+        return "x: " + column + " y: " + line;
+    }
 }

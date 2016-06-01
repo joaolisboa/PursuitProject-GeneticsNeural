@@ -1,11 +1,12 @@
 package pursuitDomain;
 
 import ga.RealVectorIndividual;
+import java.util.Arrays;
 
 public class PredatorIndividual extends RealVectorIndividual<PursuitDomainProblem, PredatorIndividual> {
-    
+
     public PredatorIndividual(PursuitDomainProblem problem, int size) {
-        super(problem, size);
+        super(problem, size, problem.getNumEvironmentSimulations());
     }
 
     public PredatorIndividual(PredatorIndividual original) {
@@ -15,37 +16,69 @@ public class PredatorIndividual extends RealVectorIndividual<PursuitDomainProble
     @Override
     public double computeFitness() {
         Environment env = problem.getEnvironment();
-        env.setPredatorsWeights(genome);
         fitness = 0;
-        
-        for(int i = 0; i < problem.getNumEvironmentSimulations(); i++){
+        numCatches = 0;
+        numIterations = new int[problem.getNumEvironmentSimulations()];
+        totalDistanceToPreyInSim = new int[problem.getNumEvironmentSimulations()];
+        lastDistancesToPrey = new int[problem.getNumEvironmentSimulations()];
+
+        for (int i = 0; i < problem.getNumEvironmentSimulations(); i++) {
+            env.setPredatorsWeights(genome);
             env.initializeAgentsPositions(i);
-            env.simulate();
+            // returns true if it catches the prey
+            if (env.simulate()) {
+                numCatches++;
+            }
+            numIterations[i] = env.getNumIterations();
+            totalDistanceToPreyInSim[i] = env.getTotalPredatorsDistance();
+            lastDistancesToPrey[i] = env.getPredatorsPreyDistanceSum();
             
-            // adicionar uma formula de fitness diferente caso a presa seja apanhada?
-            fitness += 1000 / (env.getNumIterations() * 0.5 + 
-                        env.getTotalPredatorsDistance() * 0.25 +
-                        env.getPredatorsPreyDistanceSum() * 0.25);
-                        // alternative?
-                        // 40% numIteracoes 
-                        // 30% distancia total dos predadores à presa durante a simulação
-                        // 30% distancia no final da simulação
+            //fitness += (numIterations[i]*0.4 + lastDistancesToPrey[i]*0.6 + (totalDistanceToPreyInSim[i]/20)*0.5);
+            //fitness += lastDistancesToPrey[i];
         }
+        fitness = 100 / ((sumAll(numIterations)/2)*0.3 + (sumAll(lastDistancesToPrey)/2)*0.4 + (sumAll(totalDistanceToPreyInSim)/20)*0.3);
+        //fitness = getAverage(lastDistancesToPrey) + getAverage(totalDistanceToPreyInSim);
+        
         return fitness;
     }
+    
+    private int min(int[] array){
+        int num = array[0];
+        for(int i = 1; i < array.length; i++){
+            num = num > array[i] ? array[i] : num;
+        }
+        return num;
+    }
 
-    public double[] getGenome(){
+    private int sumAll(int[] array) {
+        int sum = 0;
+        for (int i = 0; i < array.length; i++) {
+            sum += array[i];
+        }
+        return sum;
+    }
+
+    private double getAverage(int[] array) {
+        double average;
+        int sum = 0;
+        for (int i = 0; i < array.length; i++) {
+            sum += array[i];
+        }
+        average = sum / array.length;
+        return average;
+    }
+
+    public double[] getGenome() {
         return genome;
     }
 
     @Override
     public String toString() {
-        Environment env = problem.getEnvironment();
         StringBuilder sb = new StringBuilder();
-        sb.append("\nfitness: " + (double)Math.round(fitness * 1000) / 1000);
-        sb.append("\nnumber of iterations: " + env.getNumIterations());
-        sb.append("\nlast distance to prey: " + env.getPredatorsPreyDistanceSum());
-        sb.append("\ntotal distance to prey: " + env.getTotalPredatorsDistance());
+        sb.append("\nfitness: ").append((double)Math.round(fitness*1000)/1000);
+        sb.append("\nnumber of iterations: \n").append(Arrays.toString(numIterations));
+        sb.append("\nlast distance to prey: \n").append(Arrays.toString(lastDistancesToPrey));
+        sb.append("\ntotal distance to prey: \n").append(Arrays.toString(totalDistanceToPreyInSim));
         return sb.toString();
     }
 
@@ -57,9 +90,10 @@ public class PredatorIndividual extends RealVectorIndividual<PursuitDomainProble
      */
     @Override
     public int compareTo(PredatorIndividual i) {
-        if(this.fitness > i.getFitness()){
+        //System.out.println("my fitness: " + fitness + " compared to " + i.getFitness());
+        if (this.fitness > i.getFitness()) {
             return 1;
-        }else if(this.fitness < i.getFitness()){
+        } else if (this.fitness < i.getFitness()) {
             return -1;
         }
         return 0;
@@ -69,4 +103,21 @@ public class PredatorIndividual extends RealVectorIndividual<PursuitDomainProble
     public PredatorIndividual clone() {
         return new PredatorIndividual(this);
     }
+
+    public int[] getNumIterations() {
+        return numIterations;
+    }
+
+    public int[] getLastDistancesToPrey() {
+        return lastDistancesToPrey;
+    }
+
+    public int[] getTotalDistanceToPreyInSim() {
+        return totalDistanceToPreyInSim;
+    }
+
+    public int getNumCatches() {
+        return numCatches;
+    }
+    
 }
