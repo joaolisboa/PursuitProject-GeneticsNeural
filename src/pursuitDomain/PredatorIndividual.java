@@ -19,13 +19,12 @@ public class PredatorIndividual extends RealVectorIndividual<PursuitDomainProble
         fitness = 0;
         numCatches = 0;
         numIterations = new int[problem.getNumEvironmentSimulations()];
-        totalDistanceToPreyInSim = new int[problem.getNumEvironmentSimulations()];
         lastDistancesToPrey = new int[problem.getNumEvironmentSimulations()];
-
+        totalDistanceToPreyInSim = new int[problem.getNumEvironmentSimulations()];
+        
         for (int i = 0; i < problem.getNumEvironmentSimulations(); i++) {
             env.setPredatorsWeights(genome);
             env.initializeAgentsPositions(i);
-            // returns true if it catches the prey
             if (env.simulate()) {
                 numCatches++;
             }
@@ -36,7 +35,10 @@ public class PredatorIndividual extends RealVectorIndividual<PursuitDomainProble
             //fitness += (numIterations[i]*0.4 + lastDistancesToPrey[i]*0.6 + (totalDistanceToPreyInSim[i]/20)*0.5);
             //fitness += lastDistancesToPrey[i];
         }
-        fitness = 100 / ((sumAll(numIterations)/2)*0.3 + (sumAll(lastDistancesToPrey)/2)*0.4 + (sumAll(totalDistanceToPreyInSim)/20)*0.3);
+        fitness = 100 / ((sumAll(numIterations)/2)*0.3 
+                + (sumAll(lastDistancesToPrey)/2)*0.4 
+                + (sumAll(totalDistanceToPreyInSim)/20)*0.3);
+        fitness += numCatches * 0.5;
         //fitness = getAverage(lastDistancesToPrey) + getAverage(totalDistanceToPreyInSim);
         
         return fitness;

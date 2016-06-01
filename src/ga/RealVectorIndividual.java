@@ -46,10 +46,12 @@ public abstract class RealVectorIndividual <P extends Problem, I extends RealVec
         return genome.length;
     }
     
+    @Override
     public double getGene(int index) {
         return genome[index];
     }
     
+    @Override
     public void setGene(int index, double newValue) {
         genome[index] = newValue;
     }
