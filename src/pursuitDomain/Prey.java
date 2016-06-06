@@ -15,11 +15,11 @@ public class Prey extends Agent{
     
     @Override
     public void act(Environment environment) {
-        double prob = GeneticAlgorithm.random.nextDouble();
+        double prob = Environment.random.nextDouble();
         
         if(prob > restProbability){
             List<Cell> freeCells = environment.getFreeSurroundingCells(cell);
-            setCell(freeCells.get(GeneticAlgorithm.random.nextInt(freeCells.size())));
+            //setCell(freeCells.get(Environment.random.nextInt(freeCells.size())));
         }// else: won't move
     }    
 }

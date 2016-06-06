@@ -33,7 +33,7 @@ public class PanelParameters extends PanelAtributesValue {
     public static final String TOURNAMENT_SIZE = "2";
     public static final String PROB_RECOMBINATION = "0.2";
     public static final String PROB_MUTATION = "0.7";
-    public static final String STANDARD_DEVIATION = "1";
+    public static final String STANDARD_DEVIATION = "0.1";
     JTextField jTextFieldSeed = new JTextField(SEED, TEXT_FIELD_LENGHT);
     JTextField jTextFieldN = new JTextField(POPULATION_SIZE, TEXT_FIELD_LENGHT);
     JTextField jTextFieldGenerations = new JTextField(GENERATIONS, TEXT_FIELD_LENGHT);

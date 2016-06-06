@@ -3,9 +3,12 @@ package ga;
 import ga.geneticOperators.Mutation;
 import ga.geneticOperators.Recombination;
 import ga.selectionMethods.SelectionMethod;
+import gui.MainFrame;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
+import pursuitDomain.PredatorIndividual;
 import tasks.TaskMode;
 
 public class GeneticAlgorithm<I extends Individual, P extends Problem<I>> {
@@ -60,6 +63,9 @@ public class GeneticAlgorithm<I extends Individual, P extends Problem<I>> {
             fireGenerationEnded(new GAEvent(this));
         }
         fireRunEnded(new GAEvent(this));
+        System.out.println("\n################################");
+        System.out.println("melhor genome: " + Arrays.toString(((PredatorIndividual)bestInRun).genome));
+        System.out.println("fitness: " + ((PredatorIndividual)bestInRun).fitness);
         return bestInRun;
     }
 

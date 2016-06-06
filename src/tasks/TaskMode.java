@@ -5,6 +5,7 @@
  */
 package tasks;
 
+import java.util.List;
 import pursuitDomain.Predator;
 
 /**
@@ -18,5 +19,10 @@ public abstract class TaskMode {
     public int getGenomeSize(double numPredators, int predatorsNumInputs, int predatorsNumHiddenUnits){
         return (int)((numPredators + 1) * 2) + (predatorsNumInputs + 1) * predatorsNumHiddenUnits;
     }
-    
+
+    public void setWeights(List<Predator> predators, double[] weights) {
+        for(Predator pre: predators){
+            pre.setWeights(weights);
+        }
+    }
 }

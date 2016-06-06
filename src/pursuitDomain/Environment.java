@@ -1,5 +1,6 @@
 package pursuitDomain;
 
+import ga.GeneticAlgorithm;
 import java.awt.Color;
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -15,7 +16,7 @@ public class Environment {
     private final int maxIterations;
     private int numIterations; // num of iterations in the simulation
     private int totalPredatorsDistance;
-    
+
     public Environment(
             int size,
             int maxIterations,
@@ -42,19 +43,20 @@ public class Environment {
         prey = new Prey(null, probPreyRests);
 
         predators = new LinkedList<>();
-        for(int i = 0; i < numPredators; i++){
+        for (int i = 0; i < numPredators; i++) {
             predators.add(new Predator(null, predatorsNumInputs, predatorsNumHiddenLayers, predatorsNumOutputs));
         }
-        
+
         this.random = new Random();
     }
 
     //THIS METHOD SHOULD BE CALLED IN THE METHOD computeFitness BEFORE
     //ALL THE SIMULATIONS START.
     public void setPredatorsWeights(double[] weights) {
-        for (Predator predator : predators) {
+        GeneticAlgorithm.taskMode.setWeights(predators, weights);
+        /*for (Predator predator : predators) {
             predator.setWeights(weights);
-        }
+        }*/
     }
 
     //THIS METHOD SHOULD BE CALLED RIGHT BEFORE EACH CALL TO METHOD simulate (SEE BELOW).
@@ -70,35 +72,33 @@ public class Environment {
         }
 
         prey.setCell(getCell(random.nextInt(grid.length), random.nextInt(grid.length)));
-        int i = 0;
         for (Predator predator : predators) {
-            i++;
             do {
                 Cell cell = getCell(random.nextInt(grid.length), random.nextInt(grid.length));
                 if (!cell.hasAgent()) {
                     predator.setCell(cell);
                 }
             } while (predator.getCell() == null);
-        }        
+        }
     }
-        
+
     //MAKES A SIMULATION OF THE ENVIRONMENT. THE AGENTS START IN THE POSITIONS
     //WHERE THEY WHERE PLACED IN METHOD initializeAgentsPositions.
     public boolean simulate() {
         totalPredatorsDistance = 0;
-        for(numIterations = 0; numIterations < maxIterations; numIterations++){
+        for (numIterations = 0; numIterations < maxIterations; numIterations++) {
             prey.act(this);
             for (Predator predator : predators) {
                 predator.act(this);
             }
             computePredatorsPreyDistanceSum();
             fireUpdatedEnvironment();
-            if(isPreyTrapped()){
+            if (isPreyTrapped()) {
                 System.out.println("WON!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
                 System.out.println("iterations to catch: " + numIterations);
                 System.out.println("Coordinates: ");
-                System.out.println(prey.cell);
-                for(Predator p: predators){
+                System.out.println("prey: " + prey.cell);
+                for (Predator p : predators) {
                     System.out.println(p.cell);
                 }
                 return true;
@@ -106,8 +106,8 @@ public class Environment {
         }
         return false;
     }
-    
-    public boolean isPreyTrapped(){
+
+    public boolean isPreyTrapped() {
         return getFreeSurroundingCells(prey.cell).isEmpty();
     }
 
@@ -116,12 +116,12 @@ public class Environment {
         totalPredatorsDistance += distance;
         return distance;
     }
-     
+
     //COMPUTES THE SUM OF THE (SMALLEST) DISTANCES OF ALL THE PREDATORS TO THE PREY.
     //IT TAKES INTO ACCOUNT THAT THE ENVIRONMENT IS TOROIDAL.
-    public int getPredatorsPreyDistanceSum(){
+    public int getPredatorsPreyDistanceSum() {
         int distance = 0;
-        for(Predator pre: predators){
+        for (Predator pre : predators) {
             //System.out.println("prey x: " + prey.cell.getColumn() + " y: " + prey.cell.getLine());
             //System.out.println("predator x: " + pre.cell.getColumn() + " y: " + pre.cell.getLine());
             int width = pre.cell.getColumn() - prey.cell.getColumn();
@@ -129,38 +129,42 @@ public class Environment {
             //int nonToroidalDist = Math.abs(height) + Math.abs(width);
             //System.out.println("w: " + width + " h: " + height);
             //System.out.println("nonTor dist: " + nonToroidalDist);
-            
+
             int heightT = grid[0].length - Math.abs(height);
-            if(heightT == grid[0].length) heightT = 0;
+            if (heightT == grid[0].length) {
+                heightT = 0;
+            }
             int widthT = grid.length - Math.abs(width);
-            if(widthT == grid.length) widthT = 0;
+            if (widthT == grid.length) {
+                widthT = 0;
+            }
             //int toroidalDist = heightT + widthT;
             //System.out.println("wT: " + widthT + " hT: " + heightT);
             //System.out.println("tor dist: " + toroidalDist);
             //System.out.println("\n");
-            
+
             width = Math.abs(width);
             height = Math.abs(height);
             widthT = Math.abs(widthT);
             heightT = Math.abs(heightT);
-            
+
             distance += height < heightT ? height : heightT;
             distance += width < widthT ? width : widthT;
         }
         return distance;
     }
-    
+
     public int getSize() {
         return grid.length;
     }
-    
+
     public Prey getPrey() {
         return prey;
     }
-    
+
     public List<Predator> getPredators() {
         return predators;
-    }    
+    }
 
     public final Cell getCell(int line, int column) {
         return grid[line][column];
@@ -188,7 +192,7 @@ public class Environment {
     public int getNumIterations() {
         return numIterations;
     }
-    
+
     public void setNumIterations(int i) {
         this.numIterations = 0;
     }
@@ -215,12 +219,12 @@ public class Environment {
 
     public Cell getWestCell(Cell cell) {
         return cell.getColumn() > 0 ? grid[cell.getLine()][cell.getColumn() - 1] : grid[cell.getLine()][grid.length - 1];
-    }    
-    
+    }
+
     public Cell getEastCell(Cell cell) {
         return cell.getColumn() < grid.length - 1 ? grid[cell.getLine()][cell.getColumn() + 1] : grid[cell.getLine()][0];
     }
-    
+
     //listeners
     private final ArrayList<EnvironmentListener> listeners = new ArrayList<>();
 
@@ -233,10 +237,10 @@ public class Environment {
     public synchronized void removeEnvironmentListener(EnvironmentListener l) {
         listeners.remove(l);
     }
-    
+
     public void fireUpdatedEnvironment() {
         for (EnvironmentListener listener : listeners) {
             listener.environmentUpdated();
         }
-    } 
+    }
 }

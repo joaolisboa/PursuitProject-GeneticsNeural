@@ -29,6 +29,9 @@ public class Predator extends Agent {
      * Output layer activation values.
      */
     final private int[] output;
+    
+    public int[] preyCor = new int[2];
+    public int[] relCor = new int[2];
 
     public Predator(
             Cell cell,
@@ -46,6 +49,7 @@ public class Predator extends Agent {
         hiddenLayerOutput = new double[hiddenLayerSize + 1];
         hiddenLayerOutput[hiddenLayerSize] = -1; // the bias entry for the output neurons
         output = new int[outputLayerSize];
+        
     }
 
     @Override
@@ -56,6 +60,9 @@ public class Predator extends Agent {
 
     //Predators' coordinates relative to the Prey
     private void buildPerception(Environment environment) {
+        preyCor[0] = environment.getPrey().cell.getLine();
+        preyCor[1] = environment.getPrey().cell.getColumn();
+        
         int i = 0;
         for (Predator p : environment.getPredators()) {
             
@@ -74,6 +81,11 @@ public class Predator extends Agent {
 
             inputs[i] = height < heightT ? height : heightT;
             inputs[i+1] = width < widthT ? width : widthT;
+            
+            if(p == this){
+                relCor[0] = inputs[i];
+                relCor[1] = inputs[i+1];
+            }
             
             i+=2;
         }
@@ -115,11 +127,6 @@ public class Predator extends Agent {
      * @param weights vector of weights coming from the individual.
      */
     public void setWeights(double[] weights) {
-        /*System.out.println("Genome: " + Arrays.toString(weights));
-        System.out.println("Genome Size: " + weights.length);
-        System.out.println("inputLayerSize: " + inputLayerSize);
-        System.out.println("hiddenLayerSize: " + hiddenLayerSize);
-        System.out.println("outputLayerSize: " + outputLayerSize);*/
         int i = 0;
         for (int x = 0; x < inputLayerSize; x++) {
             for (int y = 0; y < hiddenLayerSize; y++) {
@@ -127,34 +134,15 @@ public class Predator extends Agent {
                 i++;
             }
         }
-        /*System.out.println("w1: ");
-        for(int x = 0; x < w1.length; x++){
-            for(int y = 0; y < w1[x].length; y++){
-                System.out.print(" " + w1[x][y]);
-            }
-        }
-        System.out.println("\ni after w1: " + i);*/
-        //i = weights.length - ((hiddenLayerSize + 1) * outputLayerSize);
         for (int x = 0; x < hiddenLayerSize; x++) {
             for (int y = 0; y < outputLayerSize; y++) {
                 w2[x][y] = weights[i];
-                //System.out.println("x: " + x + " y: " + y);
                 i++;
             }
         }
         for(int x = 0; x < outputLayerSize; x++){
             w2[hiddenLayerSize][x] = -1;
         }
-        /*System.out.println("w2: ");
-        for(int x = 0; x < w2.length; x++){
-            for(int y = 0; y < w2[x].length; y++){
-                System.out.print(" " + w2[x][y]);
-            }
-        }
-        System.out.println("\ni after w2: " + i);
-        System.out.println("#####################################################");
-        System.out.println("#####################################################");
-        System.out.println("#####################################################");*/
     }
     
     public double sigmoid(double x){
@@ -171,7 +159,9 @@ public class Predator extends Agent {
      *
      */
     private void forwardPropagation() {
-        setOutput(GeneticAlgorithm.taskMode.run(this));
+        int[] out = GeneticAlgorithm.taskMode.run(this);
+        output[0] = out[0];
+        output[1] = out[1];
     }
     
     public int getInputLayerSize(){

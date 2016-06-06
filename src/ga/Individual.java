@@ -13,6 +13,8 @@ public abstract class Individual<P extends Problem, I extends Individual> implem
         this.problem = original.problem;
         this.fitness = original.fitness;
     }
+    
+    public abstract double[] getGenome();
 
     public abstract double computeFitness();
     

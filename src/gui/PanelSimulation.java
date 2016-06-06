@@ -23,7 +23,6 @@ public class PanelSimulation extends JPanel implements EnvironmentListener {
     public static final int PANEL_SIZE = 250;
     public static final int CELL_SIZE = 20;
     public static final int GRID_TO_PANEL_GAP = 20;
-    private boolean stopped;
     MainFrame mainFrame;
     private Environment environment;
     private Image image;
@@ -73,13 +72,13 @@ public class PanelSimulation extends JPanel implements EnvironmentListener {
                 System.out.println("\n####################################");
                 System.out.println("simulation: " + Arrays.toString(weights));
                 System.out.println("fitness: " + ind.getFitness());
+                
                 for (int i = 0; i < environmentSimulations; i++) {
                     environment.setPredatorsWeights(weights);
                     environment.initializeAgentsPositions(i);
-                    environmentUpdated();
+                    //environmentUpdated();
                     printStats(ind, i);
-                    if(environment.simulate())
-                        return null;
+                    environment.simulate();
                 }
                 return null;
             }
@@ -99,7 +98,7 @@ public class PanelSimulation extends JPanel implements EnvironmentListener {
     
     private void printStats(PredatorIndividual ind, int i){
         StringBuilder sb = new StringBuilder();
-        sb.append("Simulation ").append(i).append(":");
+        sb.append("Simulation ").append(i+1).append(":");
         sb.append("\n# iterations: ").append(ind.getNumIterations()[i]);
         sb.append("\nlast distance to prey: ").append(ind.getLastDistancesToPrey()[i]);
         sb.append("\ntotal distance to prey: ").append(ind.getTotalDistanceToPreyInSim()[i]);
@@ -137,7 +136,7 @@ public class PanelSimulation extends JPanel implements EnvironmentListener {
         g.drawImage(image, GRID_TO_PANEL_GAP, GRID_TO_PANEL_GAP, null);
 
         try {
-            Thread.sleep(300);
+            Thread.sleep(250);
         } catch (InterruptedException ignore) {
         }
     }

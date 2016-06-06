@@ -41,6 +41,8 @@ public class MainFrame extends JFrame implements GAListener {
     private XYSeries seriesBestIndividual;
     private XYSeries seriesAverage;
     private SwingWorker<Void, Void> worker;
+    
+    public static double[] bestGenome;
 
     private PanelSimulation simulationPanel;
 
@@ -50,6 +52,14 @@ public class MainFrame extends JFrame implements GAListener {
         } catch (Exception e) {
             e.printStackTrace(System.err);
         }
+    }
+    
+    public static void setGenome(double[] genome){
+        bestGenome = genome;
+    }
+    
+    public static double[] getGenome(){
+        return bestGenome;
     }
 
     private void jbInit() throws Exception {

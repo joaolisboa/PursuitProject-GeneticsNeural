@@ -6,6 +6,7 @@
 package tasks;
 
 import java.util.Arrays;
+import pursuitDomain.Environment;
 import pursuitDomain.Predator;
 
 /**
@@ -17,23 +18,56 @@ public class AdHocController extends TaskMode {
     @Override
     public int[] run(Predator p) {
         // give a 'role' to each predator depending on his relative position to the prey
-        double[][] w1 = p.getW1();
-        double[][] w2 = p.getW2();
         int[] inputs = p.getInputs();
-        double[] hiddenLayerOutput = p.getHiddenLayerOutput();
         int[] output = p.getOutput();
         
-        
-        return null;
-    }
-    
-    //give predator a role
-    private int giveRole(int[] inputs){
-        
-        for(int i = 0; i < (inputs.length/2); i++){
-            
+        if (p.relCor[0] > p.relCor[1]) {
+            if (p.getCell().getColumn() > p.preyCor[1]) {
+                output[0] = 1;
+                output[1] = 0;
+            } else if (Math.abs(p.getCell().getColumn() - p.preyCor[1]) == 1) {
+                if (p.getCell().getLine() > p.preyCor[0]) {
+                    output[0] = 0;
+                    output[1] = 0;
+                } else {
+                    output[0] = 0;
+                    output[1] = 1;
+                }
+            } else {
+                output[0] = 1;
+                output[1] = 1;
+            }
+        } else if(p.relCor[0] < p.relCor[1]){
+            if (p.getCell().getLine() > p.preyCor[0]) {
+                output[0] = 0;
+                output[1] = 0;
+            }else if (Math.abs(p.getCell().getLine() - p.preyCor[0]) == 1){
+                if (p.getCell().getColumn() > p.preyCor[1]) {
+                    output[0] = 1;
+                    output[1] = 0;
+                } else {
+                    output[0] = 1;
+                    output[1] = 1;
+                }
+            }else{
+                output[0] = 0;
+                output[1] = 1;
+            }
+        }else{
+            output[0] = Environment.random.nextInt(2);
+            output[1] = Environment.random.nextInt(2);
         }
-        
+
+        return output;
+    }
+
+    //give predator a role
+    private int giveRole(int[] inputs) {
+
+        for (int i = 0; i < (inputs.length / 2); i++) {
+
+        }
+
         return 0;
     }
 

@@ -29,9 +29,14 @@ public abstract class RealVectorIndividual <P extends Problem, I extends RealVec
         System.arraycopy(original.genome, 0, genome, 0, genome.length);
         
         numCatches = original.numCatches;
-        numIterations = original.numIterations;
-        lastDistancesToPrey = original.lastDistancesToPrey;
-        totalDistanceToPreyInSim = original.totalDistanceToPreyInSim;
+        numIterations = new int[original.numIterations.length];
+        System.arraycopy(original.numIterations, 0, numIterations, 0, numIterations.length);
+        
+        lastDistancesToPrey = new int[original.lastDistancesToPrey.length];
+        System.arraycopy(original.lastDistancesToPrey, 0, lastDistancesToPrey, 0, lastDistancesToPrey.length);
+        
+        totalDistanceToPreyInSim = new int[original.totalDistanceToPreyInSim.length];
+        System.arraycopy(original.totalDistanceToPreyInSim, 0, totalDistanceToPreyInSim, 0, totalDistanceToPreyInSim.length);
     }
     
     private void generateGenome(){
@@ -39,6 +44,11 @@ public abstract class RealVectorIndividual <P extends Problem, I extends RealVec
         for(int i = 0; i < genome.length; i++){
             genome[i] = GeneticAlgorithm.random.nextDouble() * 2 - 1;
         }
+    }
+    
+    @Override
+    public double[] getGenome(){
+        return genome;
     }
     
     @Override

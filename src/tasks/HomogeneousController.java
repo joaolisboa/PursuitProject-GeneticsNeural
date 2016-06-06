@@ -41,6 +41,7 @@ public class HomogeneousController extends TaskMode {
             for (int j = 0; j < p.getHiddenLayerSize() + 1; j++) {
                 sum += hiddenLayerOutput[j] * w2[j][i];
             }
+            
             if(p.sigmoid(sum) > 0.5){
                 output[i] = 1;
             }else{
