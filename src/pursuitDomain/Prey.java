@@ -19,7 +19,7 @@ public class Prey extends Agent{
         
         if(prob > restProbability){
             List<Cell> freeCells = environment.getFreeSurroundingCells(cell);
-            //setCell(freeCells.get(Environment.random.nextInt(freeCells.size())));
+            setCell(freeCells.get(Environment.random.nextInt(freeCells.size())));
         }// else: won't move
     }    
 }

@@ -32,6 +32,7 @@ public class Predator extends Agent {
     
     public int[] preyCor = new int[2];
     public int[] relCor = new int[2];
+    private int role = -1;
 
     public Predator(
             Cell cell,
@@ -100,8 +101,10 @@ public class Predator extends Agent {
             return Action.SOUTH;
         } else if (output[0] == 1 && output[1] == 0) {
             return Action.WEST;
+        } else if (output[0] == 1 && output[1] == 1){
+            return Action.EAST;
         }
-        return Action.EAST;
+        return null;
     }
 
     private void execute(Action action, Environment environment) {
@@ -112,8 +115,10 @@ public class Predator extends Agent {
             nextCell = environment.getSouthCell(cell);
         } else if (action == Action.WEST) {
             nextCell = environment.getWestCell(cell);
-        } else {
+        } else if (action == Action.EAST){
             nextCell = environment.getEastCell(cell);
+        }else{
+            nextCell = environment.getCell(getCell().getColumn(), getCell().getLine());
         }
 
         if (!nextCell.hasAgent()) {
@@ -196,5 +201,11 @@ public class Predator extends Agent {
         return output;
     }
     
+    public int getRole(){
+        return role;
+    }
     
+    public void setRole(int i){
+        this.role = i;
+    }
 }
