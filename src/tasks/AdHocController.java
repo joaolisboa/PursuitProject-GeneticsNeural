@@ -23,11 +23,6 @@ public class AdHocController extends TaskMode {
         outputDef[0] = 0;
         outputDef[1] = 0;
         
-        //role 0->Norte 1->Sul 2->Este 3->Oeste
-        if(p.getRole()==-1){
-            giveRole(p);
-        }
-        
         switch(p.getRole()){
             case 0:
                 return roleNorth(p);
@@ -42,28 +37,6 @@ public class AdHocController extends TaskMode {
                 return roleOeste(p);
         }
         return outputDef;
-    }
-
-    //give predator a role
-    private void giveRole(Predator p) {
-
-        LinkedList<Predator> pred = new LinkedList<Predator>(); // = lista predadores
-        
-        for (Predator predator : pred) {
-            if(predator.getRole()>=0){
-                if(predator.getRole()>=1){
-                    if(predator.getRole()>=2){
-                        p.setRole(3);
-                    }else{
-                        p.setRole(2);
-                    }
-                }else{
-                    p.setRole(1);
-                }
-            }else{
-                p.setRole(0);
-            }
-        }
     }
 
     @Override

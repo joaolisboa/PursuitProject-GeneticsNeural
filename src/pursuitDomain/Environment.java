@@ -80,6 +80,7 @@ public class Environment {
                 }
             } while (predator.getCell() == null);
         }
+        
     }
 
     //MAKES A SIMULATION OF THE ENVIRONMENT. THE AGENTS START IN THE POSITIONS

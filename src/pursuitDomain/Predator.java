@@ -2,6 +2,8 @@ package pursuitDomain;
 
 import ga.GeneticAlgorithm;
 import java.awt.Color;
+import java.util.LinkedList;
+import java.util.List;
 
 public class Predator extends Agent {
 
@@ -208,4 +210,25 @@ public class Predator extends Agent {
     public void setRole(int i){
         this.role = i;
     }
+    
+    public void giveRole(List<Predator> pred) {
+        
+        for (Predator predator : pred) {
+            if(predator.getRole()>=0){
+                if(predator.getRole()>=1){
+                    if(predator.getRole()>=2){
+                        this.setRole(3);
+                    }else{
+                        this.setRole(2);
+                    }
+                }else{
+                    this.setRole(1);
+                }
+            }else{
+                this.setRole(0);
+            }
+        }
+    }
+                //predator.giveRole(predators);
+
 }
