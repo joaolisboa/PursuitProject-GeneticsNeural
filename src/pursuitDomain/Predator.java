@@ -33,7 +33,7 @@ public class Predator extends Agent {
     final private int[] output;
     
     public int[] preyCor = new int[2];
-    public int[] relCor = new int[2];
+    public int[] relCor = new int[4];
     private int role = -1;
 
     public Predator(
@@ -87,7 +87,11 @@ public class Predator extends Agent {
             
             if(p == this){
                 relCor[0] = inputs[i];
-                relCor[1] = inputs[i+1];
+                relCor[1] =inputs[i+1];
+                /*relCor[0] = height;
+                relCor[1] = width;
+                relCor[2] = heightT;
+                relCor[3] = widthT;*/
             }
             
             i+=2;
