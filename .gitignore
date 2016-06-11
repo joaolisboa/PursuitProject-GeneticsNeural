@@ -54,3 +54,7 @@ nbproject
 .idea
 .project
 .settings
+*.xls
+statistic_best_per_experiment.txt
+*.txt
+config.txt

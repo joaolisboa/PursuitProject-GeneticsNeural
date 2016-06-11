@@ -63,9 +63,6 @@ public class GeneticAlgorithm<I extends Individual, P extends Problem<I>> {
             fireGenerationEnded(new GAEvent(this));
         }
         fireRunEnded(new GAEvent(this));
-        System.out.println("\n################################");
-        System.out.println("melhor genome: " + Arrays.toString(((PredatorIndividual)bestInRun).genome));
-        System.out.println("fitness: " + ((PredatorIndividual)bestInRun).fitness);
         return bestInRun;
     }
 
@@ -120,6 +117,7 @@ public class GeneticAlgorithm<I extends Individual, P extends Problem<I>> {
         sb.append("Recombination:" + recombination + "\n");
         sb.append("Mutation:" + mutation + "\n");
         sb.append("Task: " + taskMode + "\n");
+        sb.append("Seed: " + MainFrame.seed);
         return sb.toString();
     }
 
