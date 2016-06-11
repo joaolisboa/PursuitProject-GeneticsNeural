@@ -4,6 +4,11 @@ Population size: 1000
 
 Max generations: 1500
 
+Task: task_3
+
+//opções
+//random, adhoc, task_3, task_4
+
 //--------------------------------
 
 Selection: tournament
@@ -18,11 +23,11 @@ Recombination probability: 0.7
 
 //--------------------------------
 
-Mutation: uniform_distribution
+Mutation: gaussian_distribution
 
 Mutation probability: 0.1
 
-Delta: 0.02
+Standard deviation: 0.1
 
 //--------------------------------
 

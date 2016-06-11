@@ -87,7 +87,7 @@ public class PanelSimulation extends JPanel implements EnvironmentListener {
             public void done() {
                 environment.removeEnvironmentListener(simulationPanel);
                 try {
-                    Thread.sleep(1200);
+                    Thread.sleep(600);
                 } catch (InterruptedException ignore) {
                 }
 

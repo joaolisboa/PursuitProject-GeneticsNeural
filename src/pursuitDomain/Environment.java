@@ -10,7 +10,7 @@ import java.util.Random;
 public class Environment {
 
     public static Random random;
-    private final Cell[][] grid;
+    private static Cell[][] grid;
     private final List<Predator> predators;
     private final Prey prey;
     private final int maxIterations;
@@ -79,7 +79,9 @@ public class Environment {
                     predator.setCell(cell);
                 }
             } while (predator.getCell() == null);
+            predator.giveRole(predators, seed);
         }
+        
     }
 
     //MAKES A SIMULATION OF THE ENVIRONMENT. THE AGENTS START IN THE POSITIONS
@@ -94,19 +96,12 @@ public class Environment {
             computePredatorsPreyDistanceSum();
             fireUpdatedEnvironment();
             if (isPreyTrapped()) {
-                System.out.println("WON!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
-                System.out.println("iterations to catch: " + numIterations);
-                System.out.println("Coordinates: ");
-                System.out.println("prey: " + prey.cell);
-                for (Predator p : predators) {
-                    System.out.println(p.cell);
-                }
                 return true;
             }
         }
         return false;
     }
-
+    
     public boolean isPreyTrapped() {
         return getFreeSurroundingCells(prey.cell).isEmpty();
     }
@@ -122,13 +117,8 @@ public class Environment {
     public int getPredatorsPreyDistanceSum() {
         int distance = 0;
         for (Predator pre : predators) {
-            //System.out.println("prey x: " + prey.cell.getColumn() + " y: " + prey.cell.getLine());
-            //System.out.println("predator x: " + pre.cell.getColumn() + " y: " + pre.cell.getLine());
             int width = pre.cell.getColumn() - prey.cell.getColumn();
             int height = pre.cell.getLine() - prey.cell.getLine();
-            //int nonToroidalDist = Math.abs(height) + Math.abs(width);
-            //System.out.println("w: " + width + " h: " + height);
-            //System.out.println("nonTor dist: " + nonToroidalDist);
 
             int heightT = grid[0].length - Math.abs(height);
             if (heightT == grid[0].length) {
@@ -138,11 +128,7 @@ public class Environment {
             if (widthT == grid.length) {
                 widthT = 0;
             }
-            //int toroidalDist = heightT + widthT;
-            //System.out.println("wT: " + widthT + " hT: " + heightT);
-            //System.out.println("tor dist: " + toroidalDist);
-            //System.out.println("\n");
-
+            
             width = Math.abs(width);
             height = Math.abs(height);
             widthT = Math.abs(widthT);
@@ -169,7 +155,15 @@ public class Environment {
     public final Cell getCell(int line, int column) {
         return grid[line][column];
     }
+    
+    public static boolean cellHasPredator(int[] newCell){
+        return grid[newCell[0]][newCell[1]].hasPredator();
+    }
 
+    public static boolean cellHasPrey(int[] newCell){
+        return grid[newCell[0]][newCell[1]].hasPredator();
+    }
+    
     //THIS METHOD *MAY* BE USED BY THE PREY IF YOU WANT TO SELECT THE RANDOM
     //PREY MOVEMENT JUST BETWEEN FREE SURROUNDING CELLS.
     public List<Cell> getFreeSurroundingCells(Cell cell) {

@@ -41,6 +41,7 @@ public class MainFrame extends JFrame implements GAListener {
     private XYSeries seriesBestIndividual;
     private XYSeries seriesAverage;
     private SwingWorker<Void, Void> worker;
+    public static int seed;
     
     public static double[] bestGenome;
 
@@ -178,7 +179,7 @@ public class MainFrame extends JFrame implements GAListener {
             JOptionPane.showMessageDialog(this, "File format not valid", "Error!", JOptionPane.ERROR_MESSAGE);
         }
     }
-
+    
     public void jButtonRun_actionPerformed(ActionEvent e) {
         try {
             if (problem == null) {
@@ -190,7 +191,9 @@ public class MainFrame extends JFrame implements GAListener {
             seriesBestIndividual.clear();
             seriesAverage.clear();
 
-            Random random = new Random(Integer.parseInt(panelParameters.jTextFieldSeed.getText()));
+            seed = Integer.parseInt(panelParameters.jTextFieldSeed.getText());
+            Random random = new Random(seed);
+            
             ga = new GeneticAlgorithm<>(
                     Integer.parseInt(panelParameters.jTextFieldN.getText()),
                     Integer.parseInt(panelParameters.jTextFieldGenerations.getText()),
