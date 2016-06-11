@@ -211,24 +211,28 @@ public class Predator extends Agent {
         this.role = i;
     }
     
-    public void giveRole(List<Predator> pred) {
+    public void giveRole(List<Predator> pred, int i) {
         
         for (Predator predator : pred) {
-            if(predator.getRole()>=0){
-                if(predator.getRole()>=1){
-                    if(predator.getRole()>=2){
+            if(predator.getRole()>-1){
+                if(predator.getRole()>0){
+                    if(predator.getRole()>1){
                         this.setRole(3);
+                        System.out.println("Role: "+role);
                     }else{
                         this.setRole(2);
+                        System.out.println("Role: "+role);
                     }
                 }else{
                     this.setRole(1);
+                    System.out.println("Role: "+role);
                 }
             }else{
                 this.setRole(0);
+                System.out.println("Role: "+role);
             }
         }
+        System.out.println("Pred: "+i+"role-> "+getRole());        
     }
-                //predator.giveRole(predators);
 
 }

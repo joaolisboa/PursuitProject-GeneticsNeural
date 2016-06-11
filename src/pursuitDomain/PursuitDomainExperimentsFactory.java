@@ -8,6 +8,7 @@ import ga.selectionMethods.*;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 import statistics.StatisticBestAverage;
 import statistics.StatisticBestInRun;
@@ -62,7 +63,7 @@ public class PursuitDomainExperimentsFactory extends ExperimentsFactory {
                 taskMode = new RandomController();
                 break;
             case "adhoc":
-                taskMode = new AdHocController();
+                taskMode = new AdHocController(problem.getEnvironment().getPredators());
                 break;
             case "task_3":
                 taskMode = new HomogeneousController();

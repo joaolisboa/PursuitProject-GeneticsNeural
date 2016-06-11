@@ -5,7 +5,6 @@
  */
 package tasks;
 
-import java.util.LinkedList;
 import java.util.List;
 import pursuitDomain.Predator;
 
@@ -14,14 +13,28 @@ import pursuitDomain.Predator;
  * @author J
  */
 public class AdHocController extends TaskMode {
+    
+    private static List<Predator> predators;
+    int i =1;
+    
+    public AdHocController(List<Predator> predators){
+        this.predators = predators;
+        for(Predator pr: predators){
+                pr.giveRole(predators, i);
+                i++;
+        }
+    }
+    
+    public AdHocController(){
+        
+    }
 
     @Override
     public int[] run(Predator p) {
         
         // give a 'role' to each predator depending on his relative position to the prey
+        
         int[] outputDef = new int[2];
-        outputDef[0] = 0;
-        outputDef[1] = 0;
         
         switch(p.getRole()){
             case 0:
