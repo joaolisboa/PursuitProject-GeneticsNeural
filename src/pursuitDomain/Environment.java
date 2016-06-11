@@ -79,6 +79,7 @@ public class Environment {
                     predator.setCell(cell);
                 }
             } while (predator.getCell() == null);
+            predator.giveRole(predators, seed);
         }
         
     }

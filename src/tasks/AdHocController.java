@@ -19,10 +19,6 @@ public class AdHocController extends TaskMode {
     
     public AdHocController(List<Predator> predators){
         this.predators = predators;
-        for(Predator pr: predators){
-                pr.giveRole(predators, i);
-                i++;
-        }
     }
     
     public AdHocController(){
@@ -67,7 +63,7 @@ public class AdHocController extends TaskMode {
                 output[1] = 1;   
             }
                 
-        } else if(p.getCell().getLine() > p.preyCor[1]){
+        } else if(p.getCell().getLine() >= p.preyCor[1]){
             output[0] = 0;
             output[1] = 0;
         
@@ -79,9 +75,8 @@ public class AdHocController extends TaskMode {
                 output[0] = 1;
                 output[1] = 1;
                 }
-        }
-        
-        return null;
+        }        
+        return output;
     }
 
     private int[] roleSul(Predator p) {
@@ -92,28 +87,24 @@ public class AdHocController extends TaskMode {
             if(Math.abs(p.getCell().getLine()-p.preyCor[1])!=1){
                 output[0] = 0;
                 output[1] = 0;  
-                return output;
             }
                 
-        } else if(p.getCell().getLine() > p.preyCor[1]){
+        } else if(p.getCell().getLine() <= p.preyCor[1]){
             output[0] = 0;
             output[1] = 1;
-            return output;
         
         } else if (Math.abs(p.getCell().getColumn() - p.preyCor[0]) != 0) {
             if (p.getCell().getColumn()> p.preyCor[0]) {
                 output[0] = 1;
                 output[1] = 0;
-                return output;
                 
             } else {
                 output[0] = 1;
                 output[1] = 1;
-                return output;
                 }
         }
         
-        return null;
+        return output;
     }
 
     private int[] roleEste(Predator p) {
@@ -124,27 +115,23 @@ public class AdHocController extends TaskMode {
             if(Math.abs(p.getCell().getColumn()-p.preyCor[0])!=1){
                 output[0] = 1;
                 output[1] = 0;
-                return output;
             }
                 
-        } else if(p.getCell().getColumn()> p.preyCor[0]){
+        } else if(p.getCell().getColumn()>= p.preyCor[0]){
             output[0] = 1;
             output[1] = 1;
-            return output;
         
         } else if (Math.abs(p.getCell().getLine()- p.preyCor[1]) != 0) {
             if (p.getCell().getLine()> p.preyCor[1]) {
                 output[0] = 0;
                 output[1] = 0;
-                return output;
             } else {
                 output[0] = 0;
                 output[1] = 1;
-                return output;
                 }
         }
         
-        return null;
+        return output;
     }
 
     private int[] roleOeste(Predator p) {
@@ -155,27 +142,23 @@ public class AdHocController extends TaskMode {
             if(Math.abs(p.getCell().getColumn()-p.preyCor[0])!=1){
                 output[0] = 1;
                 output[1] = 1;
-                return output;
             }
                 
-        } else if(p.getCell().getColumn() < p.preyCor[0]){
+        } else if(p.getCell().getColumn() <= p.preyCor[0]){
             output[0] = 1;
             output[1] = 0;
-            return output;
         
         } else if (Math.abs(p.getCell().getLine()- p.preyCor[1]) != 0) {
             if (p.getCell().getLine()> p.preyCor[1]) {
                 output[0] = 0;
                 output[1] = 0;
-                return output;
             } else {
                 output[0] = 0;
                 output[1] = 1;
-                return output;
                 }
         }
         
-        return null;
+        return output;
     }
 
 }
