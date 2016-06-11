@@ -22,6 +22,14 @@ public class Cell {
     public boolean hasAgent() {
         return agent != null;
     }
+    
+    public boolean hasPredator(){
+        return agent instanceof Predator;
+    }
+    
+    public boolean hasPrey(){
+        return agent instanceof Prey;
+    }
 
     public int getLine() {
         return line;

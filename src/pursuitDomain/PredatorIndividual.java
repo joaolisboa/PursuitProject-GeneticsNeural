@@ -34,10 +34,8 @@ public class PredatorIndividual extends RealVectorIndividual<PursuitDomainProble
             lastDistancesToPrey[i] = env.getPredatorsPreyDistanceSum();
         }
         
-        fitness = sumAll(totalDistanceToPreyInSim) + sumAll(numIterations) + sumAll(lastDistancesToPrey);
-        //fitness = - sumAll(numIterations) + getAverage(totalDistanceToPreyInSim)  + sumAll(lastDistancesToPrey) - numCatches*100;
+         fitness = - sumAll(numIterations) + getAverage(totalDistanceToPreyInSim)  + sumAll(lastDistancesToPrey) - numCatches*100;
         
-        //fitness -= numCatches * 100;
         return fitness;
     }
     
@@ -87,8 +85,6 @@ public class PredatorIndividual extends RealVectorIndividual<PursuitDomainProble
     @Override
     public int compareTo(PredatorIndividual i) {
         if (this.fitness > i.getFitness()) {
-            //System.out.println("##############################");
-            //System.out.println(fitness + " > " + i.getFitness());
             return -1;
         } else if (this.fitness < i.getFitness()) {
             return 1;
