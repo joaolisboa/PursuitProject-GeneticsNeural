@@ -117,7 +117,6 @@ public class GeneticAlgorithm<I extends Individual, P extends Problem<I>> {
         sb.append("Recombination:" + recombination + "\n");
         sb.append("Mutation:" + mutation + "\n");
         sb.append("Task: " + taskMode + "\n");
-        sb.append("Seed: " + MainFrame.seed);
         return sb.toString();
     }
 

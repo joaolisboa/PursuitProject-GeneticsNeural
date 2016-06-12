@@ -1,10 +1,10 @@
-Runs: 50
+Runs: 15
 
-Population size: 1000
+Population size: 200
 
-Max generations: 1500
+Max generations: 1000
 
-Task: task_3
+Task: task_4
 
 //opções
 //random, adhoc, task_3, task_4
@@ -13,21 +13,21 @@ Task: task_3
 
 Selection: tournament
 
-Tournament size: 2
+Tournament size: 2, 4, 6, 8
 
 //--------------------------------
 
 Recombination: one_cut
 
-Recombination probability: 0.7
+Recombination probability: 0.1
 
 //--------------------------------
 
 Mutation: gaussian_distribution
 
-Mutation probability: 0.1
+Mutation probability: 0.8
 
-Standard deviation: 0.1
+Standard deviation: 0.2
 
 //--------------------------------
 

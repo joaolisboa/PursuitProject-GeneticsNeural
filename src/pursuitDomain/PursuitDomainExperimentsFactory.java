@@ -5,6 +5,7 @@ import ga.GAListener;
 import ga.GeneticAlgorithm;
 import ga.geneticOperators.*;
 import ga.selectionMethods.*;
+import gui.MainFrame;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -135,6 +136,7 @@ public class PursuitDomainExperimentsFactory extends ExperimentsFactory {
         sb.append("Recombination:" + recombination + "\t");
         sb.append("Mutation:" + mutation + "\t");
         sb.append("Task: " + taskMode + "\t");
+        sb.append("Seed: " + MainFrame.seed + "\t");
         return sb.toString();
     }
 }

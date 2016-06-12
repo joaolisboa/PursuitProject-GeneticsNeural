@@ -5,6 +5,8 @@ import java.util.Arrays;
 
 public class PredatorIndividual extends RealVectorIndividual<PursuitDomainProblem, PredatorIndividual> {
 
+    private int run;
+    
     public PredatorIndividual(PursuitDomainProblem problem, int size) {
         super(problem, size, problem.getNumEvironmentSimulations());
     }
@@ -75,6 +77,17 @@ public class PredatorIndividual extends RealVectorIndividual<PursuitDomainProble
         sb.append("\n# catches: ").append(numCatches);
         return sb.toString();
     }
+    
+    public String getString() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("\nfitness: ").append(fitness);
+        sb.append("\nnumber of iterations: \n").append(Arrays.toString(numIterations));
+        sb.append("\nlast distance to prey: \n").append(Arrays.toString(lastDistancesToPrey));
+        sb.append("\ntotal distance to prey: \n").append(Arrays.toString(totalDistanceToPreyInSim));
+        sb.append("\n# catches: ").append(numCatches);
+        sb.append("\nSeed: ").append(run);
+        return sb.toString();
+    }
 
     /**
      *
@@ -111,6 +124,10 @@ public class PredatorIndividual extends RealVectorIndividual<PursuitDomainProble
 
     public int getNumCatches() {
         return numCatches;
+    }
+    
+    public void setRun(int run){
+        this.run = run;
     }
     
 }

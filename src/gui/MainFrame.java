@@ -41,7 +41,6 @@ public class MainFrame extends JFrame implements GAListener {
     private XYSeries seriesBestIndividual;
     private XYSeries seriesAverage;
     private SwingWorker<Void, Void> worker;
-    public static int seed;
     
     public static double[] bestGenome;
 
@@ -191,8 +190,7 @@ public class MainFrame extends JFrame implements GAListener {
             seriesBestIndividual.clear();
             seriesAverage.clear();
 
-            seed = Integer.parseInt(panelParameters.jTextFieldSeed.getText());
-            Random random = new Random(seed);
+            Random random = new Random(Integer.parseInt(panelParameters.jTextFieldSeed.getText()));
             
             ga = new GeneticAlgorithm<>(
                     Integer.parseInt(panelParameters.jTextFieldN.getText()),
