@@ -58,3 +58,5 @@ nbproject
 statistic_best_per_experiment.txt
 *.txt
 config.txt
+*.class
+build/classes/.netbeans_update_resources
