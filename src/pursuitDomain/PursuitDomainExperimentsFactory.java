@@ -136,7 +136,6 @@ public class PursuitDomainExperimentsFactory extends ExperimentsFactory {
         sb.append("Recombination:" + recombination + "\t");
         sb.append("Mutation:" + mutation + "\t");
         sb.append("Task: " + taskMode + "\t");
-        sb.append("Seed: " + MainFrame.seed + "\t");
         return sb.toString();
     }
 }
