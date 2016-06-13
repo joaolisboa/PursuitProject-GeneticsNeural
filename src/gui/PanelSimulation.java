@@ -69,9 +69,6 @@ public class PanelSimulation extends JPanel implements EnvironmentListener {
                 PredatorIndividual ind = mainFrame.getBestInRun();
                 double[] weights = ind.getGenome();
                 int environmentSimulations = mainFrame.getProblem().getNumEvironmentSimulations();
-                System.out.println("\n####################################");
-                System.out.println("simulation: " + Arrays.toString(weights));
-                System.out.println("fitness: " + ind.getFitness());
                 
                 for (int i = 0; i < environmentSimulations; i++) {
                     environment.setPredatorsWeights(weights);

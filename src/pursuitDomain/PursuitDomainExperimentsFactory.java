@@ -64,7 +64,7 @@ public class PursuitDomainExperimentsFactory extends ExperimentsFactory {
                 taskMode = new RandomController();
                 break;
             case "adhoc":
-                taskMode = new AdHocController(problem.getEnvironment().getPredators());
+                taskMode = new AdHocController();
                 break;
             case "task_3":
                 taskMode = new HomogeneousController();

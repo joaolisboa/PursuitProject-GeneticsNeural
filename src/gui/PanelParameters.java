@@ -2,7 +2,6 @@ package gui;
 
 import ga.geneticOperators.Mutation;
 import ga.geneticOperators.MutationGaussian;
-import ga.geneticOperators.OXCrossover;
 import ga.geneticOperators.Recombination;
 import ga.geneticOperators.RecombinationOneCut;
 import ga.geneticOperators.RecombinationTwoCuts;
@@ -40,7 +39,7 @@ public class PanelParameters extends PanelAtributesValue {
     String[] selectionMethods = {"Tournament"};
     JComboBox jComboBoxSelectionMethods = new JComboBox(selectionMethods);
     JTextField jTextFieldTournamentSize = new JTextField(TOURNAMENT_SIZE, TEXT_FIELD_LENGHT);
-    String[] recombinationMethods = {"OXCrossover", "One cut", "Two cuts", "Uniform"};
+    String[] recombinationMethods = {"One cut", "Two cuts", "Uniform"};
     JComboBox jComboBoxRecombinationMethods = new JComboBox(recombinationMethods);
     String[] taskSelection = {"Tarefa 1", "Tarefa 2", "Tarefa 3", "Tarefa 4"};
     JComboBox jComboBoxTaskSelection = new JComboBox(taskSelection);
@@ -124,12 +123,10 @@ public class PanelParameters extends PanelAtributesValue {
 
         switch (jComboBoxRecombinationMethods.getSelectedIndex()) {
             case 0:
-                return new OXCrossover<>(recombinationProb);
-            case 1:
                 return new RecombinationOneCut<>(recombinationProb);
-            case 2:
+            case 1:
                 return new RecombinationTwoCuts<>(recombinationProb);
-            case 3:
+            case 2:
                 return new RecombinationUniform<>(recombinationProb);
         }
         return null;

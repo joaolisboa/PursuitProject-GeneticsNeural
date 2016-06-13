@@ -5,8 +5,6 @@
  */
 package tasks;
 
-import java.util.List;
-import pursuitDomain.Action;
 import pursuitDomain.Cell;
 import pursuitDomain.Environment;
 import pursuitDomain.Predator;
@@ -16,17 +14,6 @@ import pursuitDomain.Predator;
  * @author J
  */
 public class AdHocController extends TaskMode {
-
-    private static List<Predator> predators;
-    int i = 1;
-
-    public AdHocController(List<Predator> predators) {
-        this.predators = predators;
-    }
-
-    public AdHocController() {
-
-    }
 
     @Override
     public int[] run(Predator p) {
@@ -42,7 +29,6 @@ public class AdHocController extends TaskMode {
         *   3-NORTH
          */
         for (int x = 0; x < 4; x++) {
-            int newDistance = 0;
             int[] newCell = getNewCell(x, p.getCell());
 
             if (Environment.cellHasPredator(newCell)) {
@@ -70,7 +56,7 @@ public class AdHocController extends TaskMode {
             widthT = Math.abs(widthT);
             heightT = Math.abs(heightT);
 
-            newDistance = height < heightT ? height : heightT;
+            int newDistance = height < heightT ? height : heightT;
             newDistance += width < widthT ? width : widthT;
 
             if (newDistance < bestDistance) {
@@ -140,114 +126,6 @@ public class AdHocController extends TaskMode {
     @Override
     public String toString() {
         return "AdHoc Controller - Tarefa 2";
-    }
-
-    private int[] roleNorth(Predator p) {
-        int[] inputs = p.getInputs();
-        int[] output = p.getOutput();
-
-        if (p.getCell().getLine() < p.preyCor[1]) {
-            if (Math.abs(p.getCell().getLine() - p.preyCor[1]) != 1) {
-                output[0] = 0;
-                output[1] = 1;
-            }
-
-        } else if (p.getCell().getLine() >= p.preyCor[1]) {
-            output[0] = 0;
-            output[1] = 0;
-
-        } else if (Math.abs(p.getCell().getColumn() - p.preyCor[0]) != 0) {
-            if (p.getCell().getColumn() > p.preyCor[0]) {
-                output[0] = 1;
-                output[1] = 0;
-            } else {
-                output[0] = 1;
-                output[1] = 1;
-            }
-        }
-        return output;
-    }
-
-    private int[] roleSul(Predator p) {
-        int[] inputs = p.getInputs();
-        int[] output = p.getOutput();
-
-        if (p.getCell().getLine() > p.preyCor[1]) {
-            if (Math.abs(p.getCell().getLine() - p.preyCor[1]) != 1) {
-                output[0] = 0;
-                output[1] = 0;
-            }
-
-        } else if (p.getCell().getLine() <= p.preyCor[1]) {
-            output[0] = 0;
-            output[1] = 1;
-
-        } else if (Math.abs(p.getCell().getColumn() - p.preyCor[0]) != 0) {
-            if (p.getCell().getColumn() > p.preyCor[0]) {
-                output[0] = 1;
-                output[1] = 0;
-
-            } else {
-                output[0] = 1;
-                output[1] = 1;
-            }
-        }
-
-        return output;
-    }
-
-    private int[] roleEste(Predator p) {
-        int[] inputs = p.getInputs();
-        int[] output = p.getOutput();
-
-        if (p.getCell().getColumn() < p.preyCor[0]) {
-            if (Math.abs(p.getCell().getColumn() - p.preyCor[0]) != 1) {
-                output[0] = 1;
-                output[1] = 0;
-            }
-
-        } else if (p.getCell().getColumn() >= p.preyCor[0]) {
-            output[0] = 1;
-            output[1] = 1;
-
-        } else if (Math.abs(p.getCell().getLine() - p.preyCor[1]) != 0) {
-            if (p.getCell().getLine() > p.preyCor[1]) {
-                output[0] = 0;
-                output[1] = 0;
-            } else {
-                output[0] = 0;
-                output[1] = 1;
-            }
-        }
-
-        return output;
-    }
-
-    private int[] roleOeste(Predator p) {
-        int[] inputs = p.getInputs();
-        int[] output = p.getOutput();
-
-        if (p.getCell().getColumn() > p.preyCor[0]) {
-            if (Math.abs(p.getCell().getColumn() - p.preyCor[0]) != 1) {
-                output[0] = 1;
-                output[1] = 1;
-            }
-
-        } else if (p.getCell().getColumn() <= p.preyCor[0]) {
-            output[0] = 1;
-            output[1] = 0;
-
-        } else if (Math.abs(p.getCell().getLine() - p.preyCor[1]) != 0) {
-            if (p.getCell().getLine() > p.preyCor[1]) {
-                output[0] = 0;
-                output[1] = 0;
-            } else {
-                output[0] = 0;
-                output[1] = 1;
-            }
-        }
-
-        return output;
     }
 
 }
