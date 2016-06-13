@@ -99,6 +99,12 @@ public class PanelSimulation extends JPanel implements EnvironmentListener {
         sb.append("\n# iterations: ").append(ind.getNumIterations()[i]);
         sb.append("\nlast distance to prey: ").append(ind.getLastDistancesToPrey()[i]);
         sb.append("\ntotal distance to prey: ").append(ind.getTotalDistanceToPreyInSim()[i]);
+        sb.append("\nCatches?\t");
+        if(ind.getLastDistancesToPrey()[i] == 4){
+            sb.append("Yes");
+        }else{
+            sb.append("No");
+        }
         statistics.setText(sb.toString());
     }
 

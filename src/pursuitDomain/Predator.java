@@ -33,8 +33,9 @@ public class Predator extends Agent {
     final private int[] output;
     
     public int[] preyCor = new int[2];
+    public int[] previousPreyCor = new int[2];
     public int[] relCor = new int[4];
-    private int role = -1;
+    public boolean preyIsAlmostCaught = false;
 
     public Predator(
             Cell cell,
@@ -66,6 +67,11 @@ public class Predator extends Agent {
         preyCor[0] = environment.getPrey().cell.getLine();
         preyCor[1] = environment.getPrey().cell.getColumn();
         
+        previousPreyCor[0] = environment.getPrey().getPreviousCell().getLine();
+        previousPreyCor[1] = environment.getPrey().getPreviousCell().getColumn();
+        
+        preyIsAlmostCaught = environment.getFreeSurroundingCells(environment.getPrey().getPreviousCell()).size() == 1;
+        
         int i = 0;
         for (Predator p : environment.getPredators()) {
             
@@ -88,10 +94,6 @@ public class Predator extends Agent {
             if(p == this){
                 relCor[0] = inputs[i];
                 relCor[1] =inputs[i+1];
-                /*relCor[0] = height;
-                relCor[1] = width;
-                relCor[2] = heightT;
-                relCor[3] = widthT;*/
             }
             
             i+=2;
@@ -205,33 +207,6 @@ public class Predator extends Agent {
 
     public int[] getOutput() {
         return output;
-    }
-    
-    public int getRole(){
-        return role;
-    }
-    
-    public void setRole(int i){
-        this.role = i;
-    }
-    
-    public void giveRole(List<Predator> pred, int i) {
-        
-        for (Predator predator : pred) {
-            if(predator.getRole()>=0){
-                if(predator.getRole()>=1){
-                    if(predator.getRole()>=2){
-                        this.setRole(3);
-                    }else{
-                        this.setRole(2);
-                    }
-                }else{
-                    this.setRole(1);
-                }
-            }else{
-                this.setRole(0);
-            }
-        }
     }
 
 }

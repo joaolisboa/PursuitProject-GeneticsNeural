@@ -7,6 +7,7 @@ import java.util.List;
 public class Prey extends Agent{
 
     final private double restProbability;
+    private Cell previousCell;
     
     public Prey(Cell cell, double restProbability){
         super(cell, Color.RED);
@@ -18,8 +19,14 @@ public class Prey extends Agent{
         double prob = Environment.random.nextDouble();
         
         if(prob > restProbability){
+            previousCell = cell;
             List<Cell> freeCells = environment.getFreeSurroundingCells(cell);
-            setCell(freeCells.get(Environment.random.nextInt(freeCells.size())));
+            Cell newCell = freeCells.get(Environment.random.nextInt(freeCells.size()));
+            setCell(newCell);
         }// else: won't move
-    }    
+    }   
+    
+    public Cell getPreviousCell(){
+        return previousCell;
+    }
 }

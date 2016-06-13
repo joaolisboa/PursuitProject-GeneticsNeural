@@ -18,6 +18,51 @@ public class AdHocController extends TaskMode {
     @Override
     public int[] run(Predator p) {
         int[] outputDef = new int[2];
+        //int[] inputs = p.getInputs();
+
+        if (p.preyIsAlmostCaught) {
+            //if this predator is the one left to catch
+            if (p.relCor[0] + p.relCor[1] > 1) {
+                // prey route
+                int route = getNewPreyRoute(p);
+                //predator route
+                int pos;
+                switch (route) {
+                    case 0://EAST - go west
+                        outputDef[0] = 1;
+                        outputDef[1] = 0;
+                        pos = 1;
+                        break;
+                    case 1://WEST - go east
+                        outputDef[0] = 1;
+                        outputDef[1] = 1;
+                        pos = 0;
+                        break;
+                    case 2://SOUTH - go north
+                        outputDef[0] = 0;
+                        outputDef[1] = 0;
+                        pos = 3;
+                        break;
+                    default://NORTH - go south
+                        outputDef[0] = 0;
+                        outputDef[1] = 1;
+                        pos = 2;
+                        break;
+                }
+                return outputDef;
+                /*int[] newCell = getNewCell(pos, p.getCell());
+                boolean cont = false;
+                if (Environment.cellHasPredator(newCell)) {
+                    cont = true;
+                }
+                if (Environment.cellHasPrey(newCell)) {
+                    cont = true;
+                }
+                if (!cont) {
+                    return outputDef;
+                }*/
+            }
+        }
 
         int currentDistance = p.relCor[0] + p.relCor[1];
         int bestDistance = currentDistance;
@@ -90,6 +135,33 @@ public class AdHocController extends TaskMode {
         }
 
         return outputDef;
+    }
+
+    private int getNewPreyRoute(Predator p) {
+        int route = 0;
+        /*
+        *   0-EAST
+        *   1-WEST
+        *   2-SOUTH
+        *   3-NORTH
+         */
+        int rowD = p.preyCor[0] - p.previousPreyCor[0];
+        int colD = p.preyCor[1] - p.previousPreyCor[1];
+
+        if (rowD == 1) {
+            return 2;
+        }
+        if (rowD == -1) {
+            return 3;
+        }
+        if (colD == 1) {
+            return 1;
+        }
+        if (colD == -1) {
+            return 0;
+        }
+
+        return route;
     }
 
     private int[] getNewCell(int act, Cell cell) {
