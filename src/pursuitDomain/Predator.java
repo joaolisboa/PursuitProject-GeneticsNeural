@@ -147,6 +147,8 @@ public class Predator extends Agent {
                 i++;
             }
         }
+        System.out.println("w1: " + w1.length + " " + w1[0].length);
+        System.out.println("w2: " + w2.length + " " + w2[0].length);
         for (int x = 0; x < hiddenLayerSize; x++) {
             for (int y = 0; y < outputLayerSize; y++) {
                 w2[x][y] = weights[i];
@@ -160,10 +162,6 @@ public class Predator extends Agent {
     
     public double sigmoid(double x){
         return 1 / (1 + Math.exp(-x));
-    }
-    
-    public void setOutput(int[] output){
-        System.arraycopy(output, 0, this.output, 0, this.outputLayerSize);
     }
 
     /**
