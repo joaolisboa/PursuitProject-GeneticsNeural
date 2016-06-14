@@ -1,6 +1,6 @@
 Runs: 10
 
-Population size: 100
+Population size: 50, 100, 150
 
 Max generations: 1000
 
@@ -27,7 +27,7 @@ Mutation: gaussian_distribution
 
 Mutation probability: 0.8
 
-Standard deviation: 0.2, 0.4, 0.8, 1
+Standard deviation: 0.2
 
 //--------------------------------
 
